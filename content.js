@@ -4,6 +4,7 @@ console.log("Content script loaded!");
 document.addEventListener("click", (e) => {
   console.log('In buy eventlistener e.target.id:', e.target.id)
   if (e.target && e.target.id) {
-    console.log('Buy Button Clicked')
+    console.log('Buy Button Clicked in Content js')
+ 
   }
 });
