@@ -7,7 +7,11 @@ import Settings from "./components/Settings";
 import Notes from "./components/Notes";
 import Header from "./components/Header";
 import Navbar from "./components/Navbar";
-
+import Footer from "./components/Footer";
+import ContactDetails from "./components/ContactDetails";
+import CountdownTimer from "./components/ui/CountdownTimer";
+import { IoChatboxEllipsesOutline, IoSettingsOutline } from "react-icons/io5";
+import OrderDetails from "./components/OrderDetails";
 
 const App = () => {
   const buyID = useSelector((state) => state?.settings?.buyID);
@@ -22,8 +26,26 @@ const App = () => {
 
   return (
     <div className="p-0">
-      {/* <Header /> */}
-      <Navbar setView={setView} />
+      <Header />
+      {/* <Navbar setView={setView} /> */}
+
+      <ContactDetails />
+
+      
+
+      <div className="flex justify-between items-center mb-9">
+        <div className="flex items-center gap-2 ">
+          <IoSettingsOutline className="text-teal-600 text-xl" />
+          <h2 className="text-lg font-semibold">Quick Settings</h2>
+        </div>
+
+        <div className="flex items-center gap-2 ">
+          <IoChatboxEllipsesOutline className="text-teal-600 text-xl" />
+          <h2 className="text-lg font-semibold"> Send Feedback</h2>
+        </div>
+      </div>
+
+      <OrderDetails/>
 
       {/* ✅ Main Section */}
       {view === "main" && (
@@ -65,6 +87,7 @@ const App = () => {
 
       {/* ✅ Notes Section */}
       {view === "notes" && <Notes setView={setView} />}
+      <Footer />
     </div>
   );
 };

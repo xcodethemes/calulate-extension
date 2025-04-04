@@ -1,33 +1,98 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSellValues, setValues } from "../features/settings/settingsSlice";
+import { setValues } from "../features/settings/settingsSlice";
 
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { IoCopyOutline } from "react-icons/io5";
-import { IoTimeOutline } from "react-icons/io5";
-import CountdownTimer from "./CountdownTimer";
+import { FaArrowLeft } from "react-icons/fa6";
+
+import ToggleBtn from "./ui/ToggleBtn";
+import { IoMdQrScanner } from "react-icons/io";
+import { TABS, tvInputFields, webInputFields } from "../utils/constant";
 
 const Settings = ({ setView }) => {
   const dispatch = useDispatch();
-  const getBuyId = useSelector((state) => state?.settings?.buyID);
-  const getSellId = useSelector((state) => state?.settings?.sellID);
 
-  const [active, setActive] = useState("TV Dhan");
+  const { tvSection, webSection } = useSelector((state) => state?.settings);
+  console.log("getAllValues=>", tvSection);
 
-  const [livePrice, setLivePrice] = useState("");
-  const [buyID, setBuyId] = useState("");
-  const [sellID, setSellId] = useState("");
-  const [selector, setSelector] = useState("");
+  const [active, setActive] = useState(TABS.TV_SECTION);
+  console.log("active=>", active);
+
+  // const [livePrice, setLivePrice] = useState("");
+  // const [superTab, setSuperTab] = useState("");
+  // const [buyID, setBuyId] = useState("");
+  // const [sellID, setSellId] = useState("");
+  // const [limitPrice, setLimitPrice] = useState("");
+  // const [target, setTarget] = useState("");
+  // const [stopLoss, setStopLoss] = useState("");
+
+  const [formData, setFormData] = useState({
+    livePrice: "",
+    superTab: "",
+    buyID: "",
+    sellID: "",
+    limitPrice: "",
+    target: "",
+    stopLoss: "",
+  });
 
   useEffect(() => {
-    console.log("getBuyId=>", getBuyId);
-    if (getBuyId != "") {
-      setBuyId(getBuyId);
+  
+    if (active === TABS.TV_SECTION) {
+      setFormData((prev) => ({
+        ...prev,
+        ...tvSection,
+      }));
     }
-    if (getSellId != "") {
-      setSellId(getSellId);
+   
+    if (active === TABS.WEB_SECTION) {
+      setFormData((prev) => ({
+        ...prev,
+        ...webSection,
+      }));
     }
-  }, [getBuyId]);
+  }, [tvSection, webSection, active]);
+
+  const handleChange = (id, value) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  // useEffect(() => {
+  //   console.log("tvSection updated=>", tvSection);
+  //   const {
+  //     livePrice,
+  //     superTab,
+  //     buyID,
+  //     sellID,
+  //     limitPrice,
+  //     target,
+  //     stopLoss,
+  //   } = tvSection;
+
+  //   if (livePrice != "") {
+  //     setLivePrice(livePrice);
+  //   }
+  //   if (superTab != "") {
+  //     setSuperTab(superTab);
+  //   }
+  //   if (buyID != "") {
+  //     setBuyId(buyID);
+  //   }
+
+  //   if (sellID != "") {
+  //     setSellId(sellID);
+  //   }
+  //   if (limitPrice != "") {
+  //     setLimitPrice(limitPrice);
+  //   }
+  //   if (target != "") {
+  //     setTargetSelector(target);
+  //   }
+  //   if (stopLoss != "") {
+  //     setStopLoss(stopLoss);
+  //   }
+  // }, [tvSection]);
 
   // ✅ Handle copy to clipboard for any input field
   const handleCopy = (value, label) => {
@@ -46,39 +111,98 @@ const Settings = ({ setView }) => {
       });
   };
 
-  // ✅ Save buyID and Selector to local storage
-  const saveSettingsToLocalStorage = (type) => {
-    if (type === "buy") {
-      // localStorage.setItem("buyID", buyID);
-    } else if (type === "sell") {
-      // localStorage.setItem("sellBtnId", sellID);
-    } else if (type === "selector") {
-      // localStorage.setItem("selector", selector);
-    }
-    // localStorage.setItem("selector", selector);
-    alert("Settings saved!");
+  // const selectors = [
+  //   {
+  //     id: "livePrice",
+  //     label: "Live Price Selector",
+  //     value: livePrice,
+  //     setStateValue: setLivePrice,
+  //   },
+  //   {
+  //     id: "superTabSelector",
+  //     label: "Super Tab Selector",
+  //     value: superTab,
+  //     setStateValue: setSuperTab,
+  //   },
+  //   {
+  //     id: "buyID",
+  //     label: "Buy Selector",
+  //     value: buyID,
+  //     setStateValue: setBuyId,
+  //   },
+  //   {
+  //     id: "sellID",
+  //     label: "Sell Selector",
+  //     value: sellID,
+  //     setStateValue: setSellId,
+  //   },
+  //   {
+  //     id: "limitPrice",
+  //     label: "Limit Price Selector",
+  //     value: limitPrice,
+  //     setStateValue: setLimitPrice,
+  //   },
+  //   {
+  //     id: "targetSelector",
+  //     label: "Target Selector",
+  //     value: target,
+  //     setStateValue: setTarget,
+  //   },
+  //   {
+  //     id: "stopLoss",
+  //     label: "Stop Loss Selector",
+  //     value: stopLoss,
+  //     setStateValue: setStopLoss,
+  //   },
+  // ];
+
+  // const inputFields = [
+  //   { id: "livePrice", label: "Live Price Selector" },
+  //   { id: "superTab", label: "Super Tab Selector" },
+  //   { id: "buyID", label: "Buy Selector" },
+  //   { id: "sellID", label: "Sell Selector" },
+  //   { id: "limitPrice", label: "Limit Price Selector" },
+  //   { id: "target", label: "Target Selector" },
+  //   { id: "stopLoss", label: "Stop Loss Selector" },
+  // ];
+
+  const topMenu = [
+    { heading: "Top Menu" },
+    { label: "Show Sell" },
+    { label: "Show Buy" },
+    { label: "Show Scalper" },
+  ];
+
+  const chartSettings = [
+    { heading: "Chart Settings" },
+    { label: "Show Scalper" },
+    { label: "Show Buy" },
+  ];
+
+  const targetSettings = [
+    { heading: "Target Settings" },
+    { label: "Target" },
+    { label: "Stop Loss" },
+    { label: "Trail Jump" },
+  ];
+
+  const handleSave = (section, value, id) => {
+    console.log("handleSave value=>", value, id);
+    const combinedValue = {
+      section: section,
+      value: value,
+      id: id,
+    };
+    console.log("combinedValue=>", combinedValue);
+    dispatch(setValues(combinedValue));
   };
 
-  const selectors = [
-    {
-      id: "livePrice",
-      label: "Live Price Selector",
-      value: livePrice,
-      setValue: setValues.livePrice,
-    },
-    {
-      id: "buyID",
-      label: "Buy Selector",
-      value: buyID,
-      setValue: setValues.buyID,
-    },
-    {
-      id: "sellID",
-      label: "Sell Selector",
-      value: sellID,
-      setValue: setValues.sellID,
-    },
-  ];
+  const inputFields =
+    active === TABS.TV_SECTION ? tvInputFields : webInputFields;
+
+  useEffect(() => {
+    console.log("in useffect active=>", inputFields);
+  }, [active]);
 
   return (
     <div>
@@ -86,7 +210,7 @@ const Settings = ({ setView }) => {
         <MdKeyboardArrowLeft className="text-[25px] absolute left-0" />
         <div className="text-center">
           <h1 className="text-lg font-bold ">Settings</h1>
-          <h2 className="text-blue-600 underline mb-2">https://tv.dhan.co/</h2>
+          <h2 className="text-blue-600 underline mb-2">{active === TABS.TV_SECTION ? 'https://tv.dhan.co/':'web dhan'}</h2>
         </div>
       </div>
 
@@ -94,9 +218,10 @@ const Settings = ({ setView }) => {
       <div className="mt-5 mb-6 grid grid-cols-2">
         <div>
           <button
-            onClick={() => setActive("TV Dhan")}
+            // onClick={() => setActive(tabs[0].id)}
+            onClick={() => setActive(TABS.TV_SECTION)}
             className={`w-full py-3 text-base font-medium rounded-md ${
-              active === "TV Dhan"
+              active === TABS.TV_SECTION
                 ? "bg-teal-700 text-white"
                 : "bg-gray-200 text-gray-500"
             }`}
@@ -106,9 +231,9 @@ const Settings = ({ setView }) => {
         </div>
         <div>
           <button
-            onClick={() => setActive("Web Dhan")}
+            onClick={() => setActive(TABS.WEB_SECTION)}
             className={`w-full py-3 text-base font-medium rounded-md ${
-              active === "Web Dhan"
+              active === TABS.WEB_SECTION
                 ? "bg-teal-700 text-white"
                 : "bg-gray-200 text-gray-500"
             }`}
@@ -120,14 +245,18 @@ const Settings = ({ setView }) => {
       {/* Toggle Buttons */}
 
       {/* 🛠️ buyID Input */}
-      <div className="flex flex-col items-center gap-4 mt-4 w-full">
+
+      <div className="flex justify-end">
+        <button className="flex items-center gap-2  bg-teal-700 hover:bg-teal-900 text-white px-4 py-2 rounded-md text-base">
+          <IoMdQrScanner className="text-lg" />
+          Scan
+        </button>
+      </div>
+      <div className="flex flex-col items-center gap-4  w-full">
         {/* ////map */}
-        {selectors.map(({ id, label, value, setValue }) => (
+        {inputFields?.map(({ id, label }) => (
           <div key={id} className="flex flex-col gap-2 w-full">
-            <label
-              htmlFor={id}
-              className="text-left text-base font-medium text-gray-800"
-            >
+            <label htmlFor={id} className="text-left text-base font-medium">
               {label}
             </label>
             <div className="flex items-center gap-2">
@@ -136,15 +265,17 @@ const Settings = ({ setView }) => {
                 id={id}
                 type="text"
                 name={id}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
+                value={formData[id]}
+                // onChange={(e) => setStateValue(e.target.value)}
+                onChange={(e) => handleChange(id, e.target.value)}
                 placeholder={`Enter ${label}...`}
                 className="flex-1 p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
 
               {/* Copy Button */}
               <button
-                onClick={() => handleCopy(value, id)}
+                // onClick={() => handleCopy(value, label)}
+                onClick={() => handleCopy(formData[id], label)}
                 className="p-2 border border-teal-600 rounded-md text-teal-600 hover:bg-teal-50"
                 title="Copy"
               >
@@ -153,7 +284,8 @@ const Settings = ({ setView }) => {
 
               {/* Save Button */}
               <button
-                onClick={() => dispatch(setValue(value))}
+                // onClick={() => handleSave(value, id)}
+                onClick={() => handleSave(active, formData[id], id)}
                 className="bg-teal-600 hover:bg-teal-700 text-white text-base font-medium px-4 py-2 rounded-md"
               >
                 Save
@@ -162,111 +294,57 @@ const Settings = ({ setView }) => {
           </div>
         ))}
         {/* ////map */}
+      </div>
 
-        {/* Buy Selector */}
-        {/* <div className="flex flex-col gap-2 w-full">
-            <label
-              htmlFor="buyID"
-              className="text-left text-base font-medium text-gray-800"
-            >
-              Buy Selector
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                id="buyID"
-                type="text"
-                name="buyID"
-                value={buyID}
-                onChange={(e) => setBuyId(e.target.value)}
-                placeholder="Enter Buy Selector..."
-                className="flex-1 p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              <button
-                onClick={() => handleCopy(buyID, "buyID")}
-                className="p-2 border border-teal-600 rounded-md text-teal-600 hover:bg-teal-50"
-                title="Copy"
-              >
-                <IoCopyOutline size={20} />
-              </button>
-              <button
-                onClick={() => dispatch(setValues(buyID))}
-                className="bg-teal-600 hover:bg-teal-700 text-white text-base font-medium px-4 py-2 rounded-md"
-              >
-                Save
-              </button>
+      <div className="mt-9">
+        {topMenu?.map((item, index) => {
+          if (item?.heading) {
+            return <h1 className="font-bold text-lg mb-2">{item?.heading}</h1>;
+          }
+          return (
+            <div key={index} className="flex mb-3 items-center justify-between">
+              <p className="text-left text-base">{item?.label}</p>
+              <ToggleBtn />
             </div>
-          </div> */}
+          );
+        })}
+      </div>
 
-        {/* Buy Selector Ends */}
+      <div className="mt-9">
+        {chartSettings?.map((item, index) => {
+          if (item?.heading) {
+            return <h1 className="font-bold text-lg mb-2">{item?.heading}</h1>;
+          }
 
-        {/* Sell button */}
-        {/* <div className="flex flex-col gap-2 w-full">
-            <label
-              htmlFor="sellID"
-              className="text-left text-base font-medium text-gray-800"
-            >
-              Sell Selector
-            </label>
-            <div className="flex items-center gap-2">
-              <input
-                id="sellID"
-                type="text"
-                name="sellID"
-                value={sellID}
-                onChange={(e) => setSellId(e.target.value)}
-                placeholder="Enter Buy Selector..."
-                className="flex-1 p-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              />
-              <button
-                onClick={() => handleCopy(buyID, "buyID")}
-                className="p-2 border border-teal-600 rounded-md text-teal-600 hover:bg-teal-50"
-                title="Copy"
-              >
-                <IoCopyOutline size={20} />
-              </button>
-              <button
-                onClick={() => dispatch(setValues(sellID))}
-                className="bg-teal-600 hover:bg-teal-700 text-white text-base font-medium px-4 py-2 rounded-md"
-              >
-                Save
-              </button>
+          return (
+            <div key={index} className="flex mb-3 items-center justify-between">
+              <p className="text-left text-base">{item?.label}</p>
+              <ToggleBtn />
             </div>
-          </div> */}
-
-        {/* // */}
-
-        {/* Sell button */}
+          );
+        })}
       </div>
 
       <div className="mt-9">
-        <h1 className="font-bold text-lg">Top Menu</h1>
-        <p className="text-left text-base">Show Sell</p>
-        <p className="text-left text-base">Show Buy</p>
-        <p className="text-left text-base">Show Scalper</p>
+        {targetSettings?.map((item, index) => {
+          if (item?.heading) {
+            return <h1 className="font-bold text-lg mb-2">{item?.heading}</h1>;
+          }
+          return (
+            <div key={index} className="flex mb-3 items-center justify-between">
+              <p className="text-left text-base">{item?.label}</p>
+              <ToggleBtn />
+            </div>
+          );
+        })}
       </div>
 
-      <div className="mt-9">
-        <h1 className="font-bold text-lg">Chart Settings</h1>
-        <p className="text-left text-base">Show Scalper</p>
-        <p className="text-left text-base">Show Buy</p>
-      </div>
-
-      <div className="mt-9">
-        <h1 className="font-bold text-lg">Target Settings</h1>
-        <p className="text-left text-base">Targer</p>
-        <p className="text-left text-base">Stop Loss</p>
-        <p className="text-left text-base">Trail Jump</p>
-      </div>
-
-      {/* <div className="mt-9 flex justify-between items-center">
-        <CountdownTimer />
-      </div> */}
-
-      <div className="mt-6">
+      <div className="mt-6 flex">
         <button
           onClick={() => setView("main")}
-          className="bg-teal-700 hover:bg-teal-900 text-white w-full  font-bold py-2   rounded mt-4"
+          className="flex gap-3 justify-center items-center bg-teal-700 hover:bg-teal-900 text-base text-white w-full  font-bold py-2   rounded mt-4"
         >
+          <FaArrowLeft className=" " />
           Go Back
         </button>
       </div>
