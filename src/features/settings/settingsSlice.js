@@ -4,13 +4,14 @@ export const settingsSlice = createSlice({
   name: "settings",
   initialState: {
     tvSection: {
-      livePrice: "",
+      livePrice: "#tfdltp",
       superTab: "",
       buyID: "",
       sellID: "",
-      limitPrice: "",
+      limitPrice: "#tfdPrice",
       target: "",
       stopLoss: "",
+      trailJump: "#tfdEnableTrailJumpValue",
     },
     webSection: {
       livePrice: "",
@@ -20,6 +21,7 @@ export const settingsSlice = createSlice({
       limitPrice: "",
       target: "",
       stopLoss: "",
+      trailJump: "",
     },
   },
   reducers: {

@@ -5,32 +5,41 @@ import ToggleBtn from "./ui/ToggleBtn";
 import { IoCheckmark } from "react-icons/io5";
 import CustomCheckbox from "./ui/CustomCheckbox";
 import { useSelector } from "react-redux";
+import { addPercentage } from "../utils/constant";
+import { calculatePercentageValue } from "../utils/helper";
 
 const OrderDetails = () => {
+
   const [livePrice, setLivePrice] = useState(0);
   const [limitPrice, setLimitPrice] = useState(0);
   const [target, setAddTarget] = useState(0);
   const [stopLoss, setStopLoss] = useState(0);
+  const [trailJump, setTrailJump] = useState(22);
   const [qty, setQty] = useState(1);
+
+  const [targerPer, setTargerPer] = useState(2.0);
+  const [stopLossPer, setStopLossPer] = useState(3.0);
 
   const allIds = useSelector((state) => state?.settings?.tvSection);
   console.log("allIds from OrderDetails=>", allIds);
 
   useEffect(() => {
-    if (!allIds?.livePrice || !allIds?.limitPrice) return;
+    console.log('UseEffect called');
+    // if (!allIds?.livePrice || !allIds?.limitPrice) return;
 
     getAllValues(allIds)
-      .then((price) => {
-        console.log("🚀 Live price fetched:", price);
-        setLivePrice(price?.livePrice);
-        setLimitPrice(price?.limitPrice);
-        setAddTarget(price?.target);
-        setStopLoss(price?.stopLoss);
-      })
-      .catch((err) => {
-        console.error("❌ Failed to get live price:", err);
-      });
-  }, [allIds]);
+    .then((price) => {
+      console.log("🚀 Live price fetched:", price);
+      setLivePrice(price?.livePrice);
+      setLimitPrice(price?.limitPrice || 0);
+      setAddTarget(price?.target || 0);
+      setStopLoss(price?.stopLoss || 0);
+      setTrailJump(price?.trailJump || 0);
+    })
+    .catch((err) => {
+      console.error("❌ Failed to get live price:", err);
+    });
+  }, []);
 
   const getAllValues = (id) => {
     console.log("getAllValues id =>", id);
@@ -63,34 +72,59 @@ const OrderDetails = () => {
                     iframe.contentDocument || iframe.contentWindow.document;
 
                   // Make sure selector is properly formatted (as ID)
-                  // const livePriceSelector = iframeDoc.querySelector(
-                  //   id?.livePrice
-                  // );
+                  const IframelivePriceSelector = iframeDoc.querySelector(
+                    id?.livePrice
+                  );
+                  console.log('IframelivePriceSelector =>', IframelivePriceSelector);
                   // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
-                  const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
-                  const limitPriceSelector = document.querySelector(id?.limitPrice).value;
-                  const targetSelector = document.querySelector(id?.target).value;
-                  const stopLossSelector = document.querySelector(id?.stopLoss).value;
+                  const livePriceSelector =  document.querySelector(
+                    id?.livePrice
+                  ).innerHTML ;
 
                   console.log("🔍 livePriceSelector =>", livePriceSelector);
-                  console.log("🔍 targetSelector =>", targetSelector);
+
+                  const limitPriceSelector = document.querySelector(
+                    id?.limitPrice
+                  ).value;
+
+                  // const limitPriceSelector =document.querySelector('#tfdPrice').value || document.querySelector(
+                  //   id?.limitPrice
+                  // ).value;
+
+                  console.log("🔍 limitPriceSelector =>", limitPriceSelector);
+                  // const targetSelector = document.querySelector(id?.target)
+                  //   .value;
+                  // const stopLossSelector = document.querySelector(id?.stopLoss)
+                  //   .value;
+
+                  const trailJumpSelector = document.querySelector(
+                    id?.trailJump
+                  ).value;
+
+                 
+                  // console.log("🔍 targetSelector =>", targetSelector);
                   // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
 
-                const allValues={
-                  livePrice: livePriceSelector,
-                  limitPrice: limitPriceSelector,
-                  target: targetSelector,
-                  stopLoss: stopLossSelector,
-                }
-                  if (livePriceSelector || limitPriceSelector) {
-                    console.log("✅ Found live price:", livePriceSelector, 'limitPriceSelector:', limitPriceSelector);
+                  const allValues = {
+                    livePrice: livePriceSelector,
+                    limitPrice: limitPriceSelector ,
+                    // target: targetSelector|| 101 ,
+                    // stopLoss: stopLossSelector || 101,
+                    trailJump: trailJumpSelector || 101,
+                  };
+                  console.log("allValues =>", allValues);
+                  if (livePriceSelector) {
+                    console.log(
+                      "✅ Found live price:",
+                      livePriceSelector,
+                    
+                    );
                     return allValues;
-                  
                   }
                   // if (limitPriceSelector) {
                   //   console.log("✅ Found limitPrice :", limitPriceSelector);
                   //   return limitPriceSelector;
-                  
+
                   // }
                 } catch (error) {
                   console.warn("⚠️ Failed to access iframe:", error);
@@ -145,7 +179,7 @@ const OrderDetails = () => {
         <h4>Limit Price at</h4>
         <div className="flex items-center gap-4">
           <ToggleBtn />
-          <QuantityInput  value={limitPrice}  />
+          <QuantityInput value={limitPrice} />
         </div>
       </div>
 
@@ -154,32 +188,36 @@ const OrderDetails = () => {
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
             {/* Hidden native checkbox to track checked state */}
-            <input type="checkbox" className="peer hidden" />
+            {/* <input type="checkbox" className="peer hidden" /> */}
             {/* Custom checkbox box */}
-            <div className="w-6 h-6 flex items-center justify-center border-2 border-teal-600 rounded-md bg-white peer-checked:bg-teal-600 peer-checked:border-teal-600 transition-all">
+            {/* <div className="w-6 h-6 flex items-center justify-center border-2 border-teal-600 rounded-md bg-white peer-checked:bg-teal-600 peer-checked:border-teal-600 transition-all">
               <IoCheckmark className="text-white text-lg opacity-0 peer-checked:opacity-100 transition-opacity" />
-            </div>
-            Add Target
+            </div> */}
+            Target : {targerPer}%
           </label>
 
-          <QuantityInput value={target} />
+          <QuantityInput
+            value={(
+              parseFloat(livePrice) +
+              calculatePercentageValue(livePrice, targerPer)
+            ).toFixed(2)}
+          />
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 20.0].map(
-            (value, idx) => (
-              <button
-                key={idx}
-                className={`px-3 py-1 text-sm  font-medium ${
-                  value === 1.0
-                    ? "bg-teal-100 text-teal-700 border-teal-600"
-                    : "text-gray-600 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                +{value.toFixed(1)}%
-              </button>
-            )
-          )}
+          {addPercentage?.map((value, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => setTargerPer(value)}
+              className={`px-3 py-1 text-sm  font-medium ${
+                value === targerPer
+                  ? "bg-green-500 hover:bg-green-700 text-white text-bold border-green-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
+            >
+              +{value.toFixed(1)}%
+            </button>
+          ))}
         </div>
       </div>
       {/* Add Target Ends */}
@@ -188,33 +226,58 @@ const OrderDetails = () => {
       <div className="mb-9 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold">
+            {/* <input
+              type="checkbox"
+              className="  text-teal-600 font-bold text-base"
+            /> */}
+            Stop Loss : {stopLossPer}%
+          </label>
+          {/* <QuantityInput value={stopLoss} /> */}
+          <QuantityInput
+            value={(
+              parseFloat(livePrice) -
+              calculatePercentageValue(livePrice, stopLossPer)
+            ).toFixed(2)}
+          />
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {addPercentage?.map((value, idx) => (
+            <button
+              key={idx}
+              onClick={(e) => setStopLossPer(value)}
+              className={`px-3 py-1 text-sm  font-medium ${
+                value === stopLossPer
+                  ? "bg-red-600 hover:bg-red-700 text-white text-bold border-red-600"
+                  : "text-gray-600 border-gray-300 hover:bg-gray-100"
+              }`}
+            >
+              -{value.toFixed(1)}%
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Add Stop Loss */}
+
+      {/* Trail Jump */}
+      <div className="flex justify-between items-center mb-4.5">
+        <h4>Trail Jump</h4>
+        <QuantityInput value={trailJump} />
+      </div>
+      {/* <div className="mb-9 rounded-lg max-w-md">
+        <div className="flex justify-between items-center mb-4">
+          <label className="flex items-center gap-2 text-lg font-semibold">
             <input
               type="checkbox"
               className="  text-teal-600 font-bold text-base"
             />
-            Add Stop Loss
+            Trail Jump
           </label>
-          <QuantityInput value={stopLoss} />
+      
+          <QuantityInput value={trailJump} />
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          {[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 10.0, 20.0].map(
-            (value, idx) => (
-              <button
-                key={idx}
-                className={`px-3 py-1 text-sm  font-medium ${
-                  value === 1.0
-                    ? "bg-teal-100 text-teal-700 border-teal-600"
-                    : "text-gray-600 border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                +{value.toFixed(1)}%
-              </button>
-            )
-          )}
-        </div>
-      </div>
-      {/* Add Stop Loss */}
+      </div> */}
+      {/* Ends Trail Jump */}
     </div>
   );
 };

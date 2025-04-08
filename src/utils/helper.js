@@ -1,5 +1,12 @@
 /* eslint-disable no-undef */
 
+export const calculatePercentageValue = (value, percentage) => {
+  if (isNaN(value) || isNaN(percentage)) {
+    return 0;
+  }
+  return (value * percentage) / 100;
+}
+
 //handle Calculations
 export const handleCalculation = () => {
   console.log("Clicked!!");

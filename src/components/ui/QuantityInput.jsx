@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const QuantityInput = ({value}) => {
-  console.log('check value in quantity input', value);
+  
   const [quantity, setQuantity] = useState(value || 1);
 
   const handleDecrease = () => {
@@ -11,7 +11,7 @@ const QuantityInput = ({value}) => {
   const handleIncrease = () => {
     onChange(value + 1);
   };
-  
+
   const handleChange = (e) => {
     const val = parseInt(e.target.value, 10);
     if (!isNaN(val) && val > 0) {
@@ -36,13 +36,13 @@ const QuantityInput = ({value}) => {
 
   return (
     <div className="w-[130px] flex items-center border border-teal-600 rounded overflow-hidden">
-      <button
+      {/* <button
         type="button"
         onClick={handleDecrease}
         className="w-10  flex items-center justify-center text-teal-600 text-xl font-medium hover:bg-teal-50"
       >
         −
-      </button>
+      </button> */}
 
       <input
         type="number"
@@ -53,13 +53,13 @@ const QuantityInput = ({value}) => {
         [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
 
-      <button
+      {/* <button
         type="button"
         onClick={handleIncrease}
         className="w-10  flex items-center justify-center text-teal-600 text-xl font-medium hover:bg-teal-50"
       >
         +
-      </button>
+      </button> */}
     </div>
   );
 };

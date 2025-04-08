@@ -35,6 +35,7 @@ const Settings = ({ setView }) => {
     limitPrice: "",
     target: "",
     stopLoss: "",
+    // trailJump: "",
   });
 
   useEffect(() => {
@@ -58,42 +59,6 @@ const Settings = ({ setView }) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  // useEffect(() => {
-  //   console.log("tvSection updated=>", tvSection);
-  //   const {
-  //     livePrice,
-  //     superTab,
-  //     buyID,
-  //     sellID,
-  //     limitPrice,
-  //     target,
-  //     stopLoss,
-  //   } = tvSection;
-
-  //   if (livePrice != "") {
-  //     setLivePrice(livePrice);
-  //   }
-  //   if (superTab != "") {
-  //     setSuperTab(superTab);
-  //   }
-  //   if (buyID != "") {
-  //     setBuyId(buyID);
-  //   }
-
-  //   if (sellID != "") {
-  //     setSellId(sellID);
-  //   }
-  //   if (limitPrice != "") {
-  //     setLimitPrice(limitPrice);
-  //   }
-  //   if (target != "") {
-  //     setTargetSelector(target);
-  //   }
-  //   if (stopLoss != "") {
-  //     setStopLoss(stopLoss);
-  //   }
-  // }, [tvSection]);
-
   // ✅ Handle copy to clipboard for any input field
   const handleCopy = (value, label) => {
     if (!value.trim()) {
@@ -111,60 +76,6 @@ const Settings = ({ setView }) => {
       });
   };
 
-  // const selectors = [
-  //   {
-  //     id: "livePrice",
-  //     label: "Live Price Selector",
-  //     value: livePrice,
-  //     setStateValue: setLivePrice,
-  //   },
-  //   {
-  //     id: "superTabSelector",
-  //     label: "Super Tab Selector",
-  //     value: superTab,
-  //     setStateValue: setSuperTab,
-  //   },
-  //   {
-  //     id: "buyID",
-  //     label: "Buy Selector",
-  //     value: buyID,
-  //     setStateValue: setBuyId,
-  //   },
-  //   {
-  //     id: "sellID",
-  //     label: "Sell Selector",
-  //     value: sellID,
-  //     setStateValue: setSellId,
-  //   },
-  //   {
-  //     id: "limitPrice",
-  //     label: "Limit Price Selector",
-  //     value: limitPrice,
-  //     setStateValue: setLimitPrice,
-  //   },
-  //   {
-  //     id: "targetSelector",
-  //     label: "Target Selector",
-  //     value: target,
-  //     setStateValue: setTarget,
-  //   },
-  //   {
-  //     id: "stopLoss",
-  //     label: "Stop Loss Selector",
-  //     value: stopLoss,
-  //     setStateValue: setStopLoss,
-  //   },
-  // ];
-
-  // const inputFields = [
-  //   { id: "livePrice", label: "Live Price Selector" },
-  //   { id: "superTab", label: "Super Tab Selector" },
-  //   { id: "buyID", label: "Buy Selector" },
-  //   { id: "sellID", label: "Sell Selector" },
-  //   { id: "limitPrice", label: "Limit Price Selector" },
-  //   { id: "target", label: "Target Selector" },
-  //   { id: "stopLoss", label: "Stop Loss Selector" },
-  // ];
 
   const topMenu = [
     { heading: "Top Menu" },
