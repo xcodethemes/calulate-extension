@@ -4,12 +4,13 @@ import QuantityInput from "./ui/QuantityInput";
 import ToggleBtn from "./ui/ToggleBtn";
 import { IoCheckmark } from "react-icons/io5";
 import CustomCheckbox from "./ui/CustomCheckbox";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addPercentage } from "../utils/constant";
 import { calculatePercentageValue } from "../utils/helper";
+import { storeStopLossValue, storeTargetValue } from "../features/settings/settingsSlice";
 
 const OrderDetails = () => {
-
+  const dispatch = useDispatch();
   const [livePrice, setLivePrice] = useState(0);
   const [limitPrice, setLimitPrice] = useState(0);
   const [target, setAddTarget] = useState(0);
@@ -24,21 +25,21 @@ const OrderDetails = () => {
   console.log("allIds from OrderDetails=>", allIds);
 
   useEffect(() => {
-    console.log('UseEffect called');
+    console.log("UseEffect called");
     // if (!allIds?.livePrice || !allIds?.limitPrice) return;
 
     getAllValues(allIds)
-    .then((price) => {
-      console.log("🚀 Live price fetched:", price);
-      setLivePrice(price?.livePrice);
-      setLimitPrice(price?.limitPrice || 0);
-      setAddTarget(price?.target || 0);
-      setStopLoss(price?.stopLoss || 0);
-      setTrailJump(price?.trailJump || 0);
-    })
-    .catch((err) => {
-      console.error("❌ Failed to get live price:", err);
-    });
+      .then((price) => {
+        console.log("🚀 Live price fetched:", price);
+        setLivePrice(price?.livePrice);
+        setLimitPrice(price?.limitPrice || 0);
+        setAddTarget(price?.target || 0);
+        setStopLoss(price?.stopLoss || 0);
+        setTrailJump(price?.trailJump || 0);
+      })
+      .catch((err) => {
+        console.error("❌ Failed to get live price:", err);
+      });
   }, []);
 
   const getAllValues = (id) => {
@@ -75,11 +76,14 @@ const OrderDetails = () => {
                   const IframelivePriceSelector = iframeDoc.querySelector(
                     id?.livePrice
                   );
-                  console.log('IframelivePriceSelector =>', IframelivePriceSelector);
+                  console.log(
+                    "IframelivePriceSelector =>",
+                    IframelivePriceSelector
+                  );
                   // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
-                  const livePriceSelector =  document.querySelector(
+                  const livePriceSelector = document.querySelector(
                     id?.livePrice
-                  ).innerHTML ;
+                  ).innerHTML;
 
                   console.log("🔍 livePriceSelector =>", livePriceSelector);
 
@@ -101,24 +105,19 @@ const OrderDetails = () => {
                     id?.trailJump
                   ).value;
 
-                 
                   // console.log("🔍 targetSelector =>", targetSelector);
                   // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
 
                   const allValues = {
                     livePrice: livePriceSelector,
-                    limitPrice: limitPriceSelector ,
+                    limitPrice: limitPriceSelector,
                     // target: targetSelector|| 101 ,
                     // stopLoss: stopLossSelector || 101,
                     trailJump: trailJumpSelector || 101,
                   };
                   console.log("allValues =>", allValues);
                   if (livePriceSelector) {
-                    console.log(
-                      "✅ Found live price:",
-                      livePriceSelector,
-                    
-                    );
+                    console.log("✅ Found live price:", livePriceSelector);
                     return allValues;
                   }
                   // if (limitPriceSelector) {
@@ -172,7 +171,7 @@ const OrderDetails = () => {
 
       <div className="flex justify-between items-center mb-4.5">
         <h4>Quantity</h4>
-        <QuantityInput value={qty} />
+        <QuantityInput id="myQty" value={qty} />
       </div>
 
       <div className="flex justify-between items-center mb-4.5">
@@ -197,6 +196,7 @@ const OrderDetails = () => {
           </label>
 
           <QuantityInput
+            id="myTarget"
             value={(
               parseFloat(livePrice) +
               calculatePercentageValue(livePrice, targerPer)
@@ -208,7 +208,19 @@ const OrderDetails = () => {
           {addPercentage?.map((value, idx) => (
             <button
               key={idx}
-              onClick={(e) => setTargerPer(value)}
+              onClick={(e) => {
+
+                setTargerPer(value)
+                const addValue = (
+                  parseFloat(livePrice) +
+                  calculatePercentageValue(livePrice, value)
+                ).toFixed(2);
+
+                console.log("see addValue =>", addValue);
+               
+                dispatch(storeTargetValue(addValue));
+              } 
+            }
               className={`px-3 py-1 text-sm  font-medium ${
                 value === targerPer
                   ? "bg-green-500 hover:bg-green-700 text-white text-bold border-green-600"
@@ -234,6 +246,7 @@ const OrderDetails = () => {
           </label>
           {/* <QuantityInput value={stopLoss} /> */}
           <QuantityInput
+            id="myStopLoss"
             value={(
               parseFloat(livePrice) -
               calculatePercentageValue(livePrice, stopLossPer)
@@ -245,7 +258,18 @@ const OrderDetails = () => {
           {addPercentage?.map((value, idx) => (
             <button
               key={idx}
-              onClick={(e) => setStopLossPer(value)}
+              onClick={() => {
+                setStopLossPer(value);
+
+                const addValue = (
+                  parseFloat(livePrice) -
+                  calculatePercentageValue(livePrice, value)
+                ).toFixed(2);
+
+                console.log("see addValue =>", addValue);
+               
+                dispatch(storeStopLossValue(addValue));
+              }}
               className={`px-3 py-1 text-sm  font-medium ${
                 value === stopLossPer
                   ? "bg-red-600 hover:bg-red-700 text-white text-bold border-red-600"
@@ -262,7 +286,7 @@ const OrderDetails = () => {
       {/* Trail Jump */}
       <div className="flex justify-between items-center mb-4.5">
         <h4>Trail Jump</h4>
-        <QuantityInput value={trailJump} />
+        <QuantityInput id="myTrailJump" value={trailJump} />
       </div>
       {/* <div className="mb-9 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">

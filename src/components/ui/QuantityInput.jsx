@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-const QuantityInput = ({value}) => {
-  
+const QuantityInput = ({ value, id }) => {
   const [quantity, setQuantity] = useState(value || 1);
 
   const handleDecrease = () => {
@@ -45,6 +44,8 @@ const QuantityInput = ({value}) => {
       </button> */}
 
       <input
+        id={id}
+        name={id}
         type="number"
         value={value}
         onChange={handleChange}

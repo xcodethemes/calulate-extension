@@ -23,19 +23,29 @@ export const settingsSlice = createSlice({
       stopLoss: "",
       trailJump: "",
     },
+    fillValues: {
+      target: "",
+      stopLoss: "",
+    },
   },
   reducers: {
+    storeTargetValue: (state, action) => {
+      state.fillValues.target = action.payload;
+    },
+    storeStopLossValue: (state, action) => {
+      state.fillValues.stopLoss = action.payload;
+    },
     setValues: (state, action) => {
       const { section, id, value } = action.payload;
-    
+
       if (section === "tvSection" && id in state.tvSection) {
         state.tvSection[id] = value;
       }
-    
+
       if (section === "webSection" && id in state.webSection) {
         state.webSection[id] = value;
       }
-    }
+    },
     // setValues: (state, action) => {
     //   const { id, value } = action.payload;
     //   if (id in state.tvSection) {
@@ -43,7 +53,6 @@ export const settingsSlice = createSlice({
     //   }
     // },
 
-    
     // setValues: (state, action) => {
     //   console.log("setValues action.payload=>", action.payload);
     //   alert("setValues action.payload=>", action.payload);
@@ -74,6 +83,10 @@ export const settingsSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setValues } = settingsSlice.actions;
+export const {
+  storeTargetValue,
+  storeStopLossValue,
+  setValues,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;
