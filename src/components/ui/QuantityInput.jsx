@@ -1,35 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 
-const QuantityInput = () => {
+const QuantityInput = ({value}) => {
+  console.log('check value in quantity input', value);
+  const [quantity, setQuantity] = useState(value || 1);
+
+  const handleDecrease = () => {
+    onChange(Math.max(value - 1, 1));
+  };
+
+  const handleIncrease = () => {
+    onChange(value + 1);
+  };
+  
+  const handleChange = (e) => {
+    const val = parseInt(e.target.value, 10);
+    if (!isNaN(val) && val > 0) {
+      onChange(val);
+    }
+  };
+
+  // const handleDecrease = (e) => {
+  //   setQuantity((prev) => Math.max(prev - 1, 1));
+  // };
+
+  // const handleIncrease = (e) => {
+  //   setQuantity((prev) => prev + 1);
+  // };
+
+  // const handleChange = (e) => {
+  //   const value = parseInt(e.target.value, 10);
+  //   if (!isNaN(value) && value > 0) {
+  //     setQuantity(value);
+  //   }
+  // };
+
   return (
-    <div>
-      <label htmlFor="Quantity" className="sr-only">
-        {" "}
-        Quantity{" "}
-      </label>
+    <div className="w-[130px] flex items-center border border-teal-600 rounded overflow-hidden">
+      <button
+        type="button"
+        onClick={handleDecrease}
+        className="w-10  flex items-center justify-center text-teal-600 text-xl font-medium hover:bg-teal-50"
+      >
+        −
+      </button>
 
-      <div className="flex items-center gap-1">
-        <button
-          type="button"
-          className="size-10 leading-10 text-gray-600 transition hover:opacity-75"
-        >
-          &minus;
-        </button>
+      <input
+        type="number"
+        value={value}
+        onChange={handleChange}
+        min="1"
+        className="w-full  text-center text-teal-600 font-bold text-base focus:outline-none appearance-none
+        [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      />
 
-        <input
-          type="number"
-          id="Quantity"
-          value="1"
-          className="h-10 w-16 rounded-sm border-gray-200 text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
-        />
-
-        <button
-          type="button"
-          className="size-10 leading-10 text-gray-600 transition hover:opacity-75"
-        >
-          &plus;
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={handleIncrease}
+        className="w-10  flex items-center justify-center text-teal-600 text-xl font-medium hover:bg-teal-50"
+      >
+        +
+      </button>
     </div>
   );
 };

@@ -19,15 +19,14 @@ const CountdownTimer = () => {
   };
 
   return (
-    // <div className="flex items-center gap-4 p-4">
-    <>
-      <p className="text-gray-700 text-base font-medium">Countdown timer</p>
+    <div className="flex justify-between items-center ">
+      {/* <p className="text-gray-700 text-base font-medium">Countdown timer</p> */}
+      <h4 className="">Countdown timer</h4>
       <div className="text-sm flex items-center gap-2 px-3 py-1 border border-teal-500 text-teal-600 rounded-md font-semibold">
         <IoTimeOutline size={18} />
         <span>{formatTime(time)}</span>
       </div>
-    </>
-    //   </div>
+    </div>
   );
 };
 

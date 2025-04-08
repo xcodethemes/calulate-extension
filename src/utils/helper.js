@@ -15,6 +15,7 @@ export const handleCalculation = () => {
         target: { tabId: tabs[0].id },
         function: () => {
           const inputs = document.querySelectorAll('input[type="number"]');
+          console.log("handleCalculation inputs==>", inputs);
           if (inputs.length === 0) {
             console.log("No number inputs found.");
             return;
@@ -38,7 +39,7 @@ export const handleCalculation = () => {
 
 //handle Buy Click
 export const handleBuyClick = (ID) => {
-  console.log("ID==>", ID);
+  console.log("handleBuyClick ID==>", ID);
 
   if (!ID.trim()) {
     alert("Please enter a valid ID before trading.");
@@ -104,75 +105,3 @@ export const handleBuyClick = (ID) => {
     );
   }
 };
-//     console.log("type==>", type);
-
-//     if (!buyID.trim() && type === "buy") {
-//       alert("Please enter a valid BuyID before trading.");
-//       return;
-//     }
-//     // if (!sellID.trim() && type === "sell") {
-//     //   alert("Please enter a valid Sell ID before trading.");
-//     //   return;
-//     // }
-
-//     if (typeof chrome !== "undefined" && chrome.tabs) {
-//       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//         if (tabs.length === 0) {
-//           console.error("No active tab found.");
-//           return;
-//         }
-
-//         // Inject script into the active tab
-//         chrome.scripting.executeScript({
-//           target: { tabId: tabs[0].id },
-//           args: [buyID, sellID, type],
-//           // args: [buyID, type],
-//           function: (buyID, sellID, type) => {
-//           // function: (buyID, type) => {
-//             console.log("✅ Checking for iframes...");
-
-//             // Handle iframes
-//             const iframes = document.querySelectorAll("iframe");
-
-//             if (iframes.length === 0) {
-//               console.warn("❌ No iframes found.");
-//               return;
-//             }
-
-//             let found = false;
-
-//             for (const iframe of iframes) {
-//               try {
-//                 const iframeDoc =
-//                   iframe.contentDocument || iframe.contentWindow.document;
-
-//                 const btnSelector = type === "buy" ? buyID : sellID;
-//                 // const btnSelector = type === "buy" ? buyID : '';
-
-//                 const buyBtn = iframeDoc.querySelector(btnSelector);
-//                 // console.log("🔍 Checking iframe:", iframe, "=>", buyBtn);
-//                 console.log("buyBtn=>", buyBtn);
-
-//                 if (buyBtn) {
-//                   buyBtn.click();
-//                   console.log("✅ Button clicked inside iframe!");
-//                   found = true;
-//                   break;
-//                 }
-//               } catch (error) {
-//                 console.warn("⚠️ Failed to access iframe:", error);
-//               }
-//             }
-
-//             if (!found) {
-//               console.warn('❌ No "buy" button found in any iframe.');
-//             }
-//           },
-//         });
-//       });
-//     } else {
-//       console.warn(
-//         "Chrome API is not available. Run this as a Chrome extension."
-//       );
-//     }
-//   };
