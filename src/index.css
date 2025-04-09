@@ -7,6 +7,8 @@
 
 @theme{
   --font-family: SF Pro Display, "sans-serif";
+  --color-link-600: oklch(54.6% 0.245 262.881);
+  --color-pro: #FFB84D;
 }
 
 body {

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { IoCheckmarkSharp } from "react-icons/io5";
 
-const ToggleBtn = () => {
+const ToggleBtn = ({toggle}) => {
   const [isChecked, setIsChecked] = useState(false);
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
+    // setIsChecked(!toggle);
   };
 
   return (

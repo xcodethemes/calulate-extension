@@ -17,8 +17,10 @@ import {
 
 const OrderDetails = () => {
   const dispatch = useDispatch();
-  const [livePrice, setLivePrice] = useState(0);
-  const [limitPrice, setLimitPrice] = useState("");
+
+  const [toggleMarketPrice, setToggleMarketPrice] = useState(false);
+  const [livePrice, setLivePrice] = useState('');
+  const [limitPrice, setLimitPrice] = useState(1);
   const [target, setAddTarget] = useState(0);
   const [stopLoss, setStopLoss] = useState(0);
   const [trailJump, setTrailJump] = useState(22);
@@ -31,23 +33,26 @@ const OrderDetails = () => {
   console.log("allIds from OrderDetails=>", allIds);
 
   useEffect(() => {
+    // if (!qty) {
+    // }
     dispatch(storeQtyValue(qty));
     dispatch(storeLimitPriceValue(limitPrice));
     dispatch(setTrailJumpValue(trailJump));
   }, [qty, limitPrice, trailJump]);
 
   useEffect(() => {
-    console.log("UseEffect called");
+    console.log("UseEffect called #tfdQuantity");
     // if (!allIds?.livePrice || !allIds?.limitPrice) return;
 
     getAllValues(allIds)
       .then((price) => {
         console.log("🚀 Live price fetched:", price);
+        setQty(price?.qty || 101);
         setLivePrice(price?.livePrice);
-        setLimitPrice(price?.limitPrice || 0);
-        setAddTarget(price?.target || 0);
-        setStopLoss(price?.stopLoss || 0);
-        setTrailJump(price?.trailJump || 0);
+        setLimitPrice(price?.limitPrice || "");
+        setAddTarget(price?.target || "");
+        setStopLoss(price?.stopLoss || "");
+        setTrailJump(price?.trailJump || "");
       })
       .catch((err) => {
         console.error("❌ Failed to get live price:", err);
@@ -99,6 +104,9 @@ const OrderDetails = () => {
 
                   console.log("🔍 livePriceSelector =>", livePriceSelector);
 
+                  const qtySelector = document.querySelector(id?.qty).value;
+                  console.log("🔍 qtySelector =>", qtySelector);
+
                   const limitPriceSelector = document.querySelector(
                     id?.limitPrice
                   ).value;
@@ -121,6 +129,7 @@ const OrderDetails = () => {
                   // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
 
                   const allValues = {
+                    qty: qtySelector,
                     livePrice: livePriceSelector,
                     limitPrice: limitPriceSelector,
                     // target: targetSelector|| 101 ,
@@ -165,10 +174,10 @@ const OrderDetails = () => {
 
   return (
     <div className="mt-9">
-      <div className="flex justify-center items-center gap-2 mb-4.5">
+      <div className="flex justify-center items-center gap-2 mb-4.5 text-lg">
         <BsFillLightningChargeFill />
 
-        <h2 className="font-bold text-lg">Super Order Details</h2>
+        <h2 className="font-bold ">Super Order Details</h2>
       </div>
       <div className="flex justify-between items-center mb-4.5">
         <h4 className="">Live Market Price</h4>
@@ -189,8 +198,9 @@ const OrderDetails = () => {
       <div className="flex justify-between items-center mb-4.5">
         <h4>Limit Price at</h4>
         <div className="flex items-center gap-4">
-          <ToggleBtn />
-          <QuantityInput value={limitPrice} setValue={setLimitPrice} />
+          <ToggleBtn toggle={setToggleMarketPrice}/>
+          {toggleMarketPrice ? "Market Price": <QuantityInput value={limitPrice} setValue={setLimitPrice} />}
+          {/* <QuantityInput value={limitPrice} setValue={setLimitPrice} /> */}
         </div>
       </div>
 

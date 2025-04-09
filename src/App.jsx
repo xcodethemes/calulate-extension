@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import "./App.css";
 
-import { handleBuyClick, handleCalculation } from "./utils/helper";
+import { handleBuyClick, handleCalculation, handleFillValues } from "./utils/helper";
 import Settings from "./components/Settings";
 import Notes from "./components/Notes";
 import Header from "./components/Header";
@@ -13,10 +13,11 @@ import CountdownTimer from "./components/ui/CountdownTimer";
 import { IoChatboxEllipsesOutline, IoSettingsOutline } from "react-icons/io5";
 import OrderDetails from "./components/OrderDetails";
 import { BsFillLightningChargeFill } from "react-icons/bs";
+import Pro from "./components/Pro";
 
 const App = () => {
-   const filledValues = useSelector((state) => state?.settings?.fillValues);
-   console.log('extension value=>', filledValues?.stopLoss);
+  const filledValues = useSelector((state) => state?.settings?.fillValues);
+  console.log("extension value=>", filledValues?.stopLoss);
   const buyID = useSelector((state) => state?.settings?.buyID);
   const sellID = useSelector((state) => state?.settings?.sellID);
 
@@ -27,52 +28,52 @@ const App = () => {
   console.log("storedBuyID from Outside=>", storedBuyID);
   console.log("In app buyID from Outside=>", buyID);
 
-  const handleFillValues = () => {
-    console.log("handleFillValues Clicked!!");
+  // const handleFillValues = () => {
+  //   console.log("handleFillValues Clicked!!");
 
-    if (typeof chrome !== "undefined" && chrome.tabs) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length === 0) {
-          console.error("No active tab found.");
-          return;
-        }
-  
-        chrome.scripting.executeScript({
-          target: { tabId: tabs[0].id },
-          args:[filledValues],
-          function: (filledValues) => {
-            // const inputs = document?.querySelector(allIds?.stopLoss) || document.querySelector('#tfdSLPrice');
-            const qtyInput = document.querySelector("#tfdQuantity");
-            const limitPriceInput = document.querySelector("#tfdPrice");
-            const stopLossInput =  document.querySelector('#tfdSLPrice');
-            const targetInput =  document.querySelector('#tfdTargetPrice');
-            const trailJumpInput = document.querySelector('#tfdEnableTrailJumpValue');
+  //   if (typeof chrome !== "undefined" && chrome.tabs) {
+  //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //       if (tabs.length === 0) {
+  //         console.error("No active tab found.");
+  //         return;
+  //       }
 
-            // console.log("Check stop loss inputs==>", inputs);
-            // if (inputs.length === 0) {
-            //   console.log("No number inputs found.");
-            //   return;
-            // }
-  
-          
-            console.log('extension obj=>', filledValues.stopLoss);
-            qtyInput.value = filledValues?.qty;
-            limitPriceInput.value = filledValues?.limitPrice;
-            stopLossInput.value = filledValues?.stopLoss ;
-            targetInput.value = filledValues?.target ;
-            trailJumpInput.value = filledValues?.trailJump ;
-  
-            console.log("Fill Values!");
-          },
-        });
-      });
-    } else {
-      console.warn(
-        "Chrome API is not available. Run this as a Chrome extension."
-      );
-    }
+  //       chrome.scripting.executeScript({
+  //         target: { tabId: tabs[0].id },
+  //         args: [filledValues],
+  //         function: (filledValues) => {
+  //           // const inputs = document?.querySelector(allIds?.stopLoss) || document.querySelector('#tfdSLPrice');
+  //           const qtyInput = document.querySelector("#tfdQuantity");
+  //           const limitPriceInput = document.querySelector("#tfdPrice");
+  //           const stopLossInput = document.querySelector("#tfdSLPrice");
+  //           const targetInput = document.querySelector("#tfdTargetPrice");
+  //           const trailJumpInput = document.querySelector(
+  //             "#tfdEnableTrailJumpValue"
+  //           );
 
-  }
+  //           // console.log("Check stop loss inputs==>", inputs);
+  //           // if (inputs.length === 0) {
+  //           //   console.log("No number inputs found.");
+  //           //   return;
+  //           // }
+
+  //           console.log("extension obj=>", filledValues);
+  //           qtyInput.value = filledValues?.qty;
+  //           limitPriceInput.value = filledValues?.limitPrice;
+  //           stopLossInput.value = filledValues?.stopLoss;
+  //           targetInput.value = filledValues?.target;
+  //           trailJumpInput.value = filledValues?.trailJump;
+
+  //           console.log("Fill Values!");
+  //         },
+  //       });
+  //     });
+  //   } else {
+  //     console.warn(
+  //       "Chrome API is not available. Run this as a Chrome extension."
+  //     );
+  //   }
+  // };
 
   return (
     <div className="p-0">
@@ -100,18 +101,8 @@ const App = () => {
 
           <OrderDetails />
 
-          <div>
-            <div className="flex justify-center items-center  mb-2">
-            <button
-                id="fillValues"
-                name="fillValues"
-                // onClick={() => handleBuyClick(buyID)}
-                onClick={() => {handleFillValues()}}
-                className="flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
-              >
-                <BsFillLightningChargeFill /> Fill values
-              </button>
-            </div>
+          <div className="my-3">
+           
 
             {/* <div className="flex justify-center items-center gap-2"> */}
             <div className="grid grid-cols-2 gap-2 mb-1.5">
@@ -133,16 +124,33 @@ const App = () => {
                 <BsFillLightningChargeFill /> Instant Sell
               </button>
             </div>
-            <h1 className="text-xl font-bold text-gray-700">
-              Perform Calculations
-            </h1>
-            <button
-              onClick={() => handleCalculation()}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-            >
-              Do Calculation
-            </button>
+
+             <div className="flex justify-center items-center mb-2">
+              <button
+                id="fillValues"
+                name="fillValues"
+              
+                onClick={() => {
+                  handleFillValues(filledValues);
+                }}
+                className=" flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
+              >
+                <BsFillLightningChargeFill /> Fill values
+              </button>
+            </div>
+            {/* <div>
+              <h1 className="text-xl font-bold text-gray-700">
+                Perform Calculations
+              </h1>
+              <button
+                onClick={() => handleCalculation()}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+              >
+                Do Calculation
+              </button>
+            </div> */}
           </div>
+             <Pro/>
         </>
       )}
 
@@ -151,6 +159,8 @@ const App = () => {
 
       {/* ✅ Notes Section */}
       {view === "notes" && <Notes setView={setView} />}
+
+     
       <Footer />
     </div>
   );

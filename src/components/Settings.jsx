@@ -8,10 +8,18 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 import ToggleBtn from "./ui/ToggleBtn";
 import { IoMdQrScanner } from "react-icons/io";
-import { TABS, tvInputFields, webInputFields } from "../utils/constant";
+import {
+  addPercentage,
+  percentageDropdown,
+  TABS,
+  tvInputFields,
+  webInputFields,
+} from "../utils/constant";
+import Select from "react-select";
 
 const Settings = ({ setView }) => {
   const dispatch = useDispatch();
+  const [selectedOptions, setSelectedOptions] = useState({});
 
   const { tvSection, webSection } = useSelector((state) => state?.settings);
   console.log("getAllValues=>", tvSection);
@@ -39,14 +47,13 @@ const Settings = ({ setView }) => {
   });
 
   useEffect(() => {
-  
     if (active === TABS.TV_SECTION) {
       setFormData((prev) => ({
         ...prev,
         ...tvSection,
       }));
     }
-   
+
     if (active === TABS.WEB_SECTION) {
       setFormData((prev) => ({
         ...prev,
@@ -55,9 +62,8 @@ const Settings = ({ setView }) => {
     }
   }, [tvSection, webSection, active]);
 
-  const handleChange = (id, value) => {
-    setFormData((prev) => ({ ...prev, [id]: value }));
-  };
+  
+
 
   // ✅ Handle copy to clipboard for any input field
   const handleCopy = (value, label) => {
@@ -75,7 +81,6 @@ const Settings = ({ setView }) => {
         console.error(`Failed to copy ${label}: `, err);
       });
   };
-
 
   const topMenu = [
     { heading: "Top Menu" },
@@ -96,6 +101,13 @@ const Settings = ({ setView }) => {
     { label: "Stop Loss" },
     { label: "Trail Jump" },
   ];
+
+  const handleChange = (label, option) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [label]: option
+    }));
+  };
 
   const handleSave = (section, value, id) => {
     console.log("handleSave value=>", value, id);
@@ -118,10 +130,15 @@ const Settings = ({ setView }) => {
   return (
     <div>
       <div className="flex items-center justify-center relative w-full">
-        <MdKeyboardArrowLeft className="text-[25px] absolute left-0" />
+        <MdKeyboardArrowLeft
+          className="text-[25px] absolute left-0 cursor-pointer"
+          onClick={() => setView("main")}
+        />
         <div className="text-center">
           <h1 className="text-lg font-bold ">Settings</h1>
-          <h2 className="text-blue-600 underline mb-2">{active === TABS.TV_SECTION ? 'https://tv.dhan.co/':'web dhan'}</h2>
+          <h2 className="text-link-600 underline mb-2">
+            {active === TABS.TV_SECTION ? "https://tv.dhan.co/" : "web dhan"}
+          </h2>
         </div>
       </div>
 
@@ -131,7 +148,7 @@ const Settings = ({ setView }) => {
           <button
             // onClick={() => setActive(tabs[0].id)}
             onClick={() => setActive(TABS.TV_SECTION)}
-            className={`w-full py-3 text-base font-medium rounded-md ${
+            className={`w-full py-2.5 text-base font-medium rounded-md ${
               active === TABS.TV_SECTION
                 ? "bg-teal-700 text-white"
                 : "bg-gray-200 text-gray-500"
@@ -143,7 +160,7 @@ const Settings = ({ setView }) => {
         <div>
           <button
             onClick={() => setActive(TABS.WEB_SECTION)}
-            className={`w-full py-3 text-base font-medium rounded-md ${
+            className={`w-full py-2.5 text-base font-medium rounded-md ${
               active === TABS.WEB_SECTION
                 ? "bg-teal-700 text-white"
                 : "bg-gray-200 text-gray-500"
@@ -244,7 +261,22 @@ const Settings = ({ setView }) => {
           return (
             <div key={index} className="flex mb-3 items-center justify-between">
               <p className="text-left text-base">{item?.label}</p>
-              <ToggleBtn />
+              {/* <ToggleBtn /> */}
+              {item?.label != "Trail Jump" && (
+                <Select
+                options={percentageDropdown}
+                onChange={(option) => handleChange(item.label, option)}
+                value={selectedOptions[item.label] || null}
+                placeholder="Select percentage"
+              />
+              )}
+              {item?.label != "Trail Jump" && (
+                <span className="w-1/3">
+                {selectedOptions[item.label]
+                  ? `Selected: ${selectedOptions[item.label].label}`
+                  : "No selection"}
+              </span>
+              )}
             </div>
           );
         })}
