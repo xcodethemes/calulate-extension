@@ -24,16 +24,28 @@ export const settingsSlice = createSlice({
       trailJump: "",
     },
     fillValues: {
+      qty: "",
+      limitPrice: "",
       target: "",
       stopLoss: "",
+      trailJump: "",
     },
   },
   reducers: {
+    storeQtyValue: (state, action) => {
+      state.fillValues.qty = action.payload;
+    },
+    storeLimitPriceValue: (state, action) => {
+      state.fillValues.limitPrice = action.payload;
+    },
     storeTargetValue: (state, action) => {
       state.fillValues.target = action.payload;
     },
     storeStopLossValue: (state, action) => {
       state.fillValues.stopLoss = action.payload;
+    },
+    setTrailJumpValue: (state, action) => {
+      state.fillValues.trailJump = action.payload;
     },
     setValues: (state, action) => {
       const { section, id, value } = action.payload;
@@ -84,8 +96,11 @@ export const settingsSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
+  storeQtyValue,
+  storeLimitPriceValue,
   storeTargetValue,
   storeStopLossValue,
+  setTrailJumpValue,
   setValues,
 } = settingsSlice.actions;
 

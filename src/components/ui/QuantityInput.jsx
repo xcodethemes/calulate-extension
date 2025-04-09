@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const QuantityInput = ({ value, id }) => {
+const QuantityInput = ({ value, id , setValue }) => {
   const [quantity, setQuantity] = useState(value || 1);
 
   const handleDecrease = () => {
@@ -12,9 +12,12 @@ const QuantityInput = ({ value, id }) => {
   };
 
   const handleChange = (e) => {
-    const val = parseInt(e.target.value, 10);
-    if (!isNaN(val) && val > 0) {
-      onChange(val);
+    // const val = parseInt(e.target.value, 10);
+    // if (!isNaN(val) && val > 0) {
+    //   onChange(val);
+    // }
+    if(setValue){
+      setValue(e.target.value)
     }
   };
 

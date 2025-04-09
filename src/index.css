@@ -1,7 +1,17 @@
+@font-face {
+  font-family: SF Pro Display;
+  /* src: url('../src/assets/fonts/SFPRODISPLAYREGULAR.OTF'); */
+  src: url('../src/assets/fonts/SFPRODISPLAYMEDIUM.OTF');
+}
 @import "tailwindcss";
 
+@theme{
+  --font-family: SF Pro Display, "sans-serif";
+}
+
 body {
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
+  font-family: SF Pro Display, sans-serif;
   padding: 12px;
   width: 400px;
   text-align: center;

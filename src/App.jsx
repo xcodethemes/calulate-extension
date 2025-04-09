@@ -42,8 +42,12 @@ const App = () => {
           args:[filledValues],
           function: (filledValues) => {
             // const inputs = document?.querySelector(allIds?.stopLoss) || document.querySelector('#tfdSLPrice');
+            const qtyInput = document.querySelector("#tfdQuantity");
+            const limitPriceInput = document.querySelector("#tfdPrice");
             const stopLossInput =  document.querySelector('#tfdSLPrice');
             const targetInput =  document.querySelector('#tfdTargetPrice');
+            const trailJumpInput = document.querySelector('#tfdEnableTrailJumpValue');
+
             // console.log("Check stop loss inputs==>", inputs);
             // if (inputs.length === 0) {
             //   console.log("No number inputs found.");
@@ -52,9 +56,11 @@ const App = () => {
   
           
             console.log('extension obj=>', filledValues.stopLoss);
-           
+            qtyInput.value = filledValues?.qty;
+            limitPriceInput.value = filledValues?.limitPrice;
             stopLossInput.value = filledValues?.stopLoss ;
             targetInput.value = filledValues?.target ;
+            trailJumpInput.value = filledValues?.trailJump ;
   
             console.log("Fill Values!");
           },
