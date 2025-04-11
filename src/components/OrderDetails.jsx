@@ -6,7 +6,7 @@ import { IoCheckmark } from "react-icons/io5";
 import CustomCheckbox from "./ui/CustomCheckbox";
 import { useDispatch, useSelector } from "react-redux";
 import { addPercentage } from "../utils/constant";
-import { calculatePercentageValue } from "../utils/helper";
+import { calculatePercentageValue, getAllValues } from "../utils/helper";
 import {
   setTrailJumpValue,
   storeLimitPriceValue,
@@ -24,7 +24,7 @@ const OrderDetails = () => {
   const [target, setAddTarget] = useState(0);
   const [stopLoss, setStopLoss] = useState(0);
   const [trailJump, setTrailJump] = useState(22);
-  const [qty, setQty] = useState(1);
+  const [qty, setQty] = useState('');
 
   const [targerPer, setTargerPer] = useState(2.0);
   const [stopLossPer, setStopLossPer] = useState(3.0);
@@ -47,7 +47,7 @@ const OrderDetails = () => {
     getAllValues(allIds)
       .then((price) => {
         console.log("🚀 Live price fetched:", price);
-        setQty(price?.qty || 101);
+        setQty(price?.qty || '');
         setLivePrice(price?.livePrice);
         setLimitPrice(price?.limitPrice || "");
         setAddTarget(price?.target || "");
@@ -59,118 +59,118 @@ const OrderDetails = () => {
       });
   }, []);
 
-  const getAllValues = (id) => {
-    console.log("getAllValues id =>", id);
+  // const getAllValues = (id) => {
+  //   console.log("getAllValues id =>", id);
 
-    return new Promise((resolve, reject) => {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (tabs.length === 0) {
-          console.error("No active tab found.");
-          reject("No active tab");
-          return;
-        }
+  //   return new Promise((resolve, reject) => {
+  //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //       if (tabs.length === 0) {
+  //         console.error("No active tab found.");
+  //         reject("No active tab");
+  //         return;
+  //       }
 
-        chrome.scripting.executeScript(
-          {
-            target: { tabId: tabs[0].id },
-            args: [id],
-            func: (id) => {
-              console.log("✅ Checking for iframes...");
-              console.log("✅ Checking for id...", id);
-              const iframes = document.querySelectorAll("iframe");
+  //       chrome.scripting.executeScript(
+  //         {
+  //           target: { tabId: tabs[0].id },
+  //           args: [id],
+  //           func: (id) => {
+  //             console.log("✅ Checking for iframes...");
+  //             console.log("✅ Checking for id...", id);
+  //             const iframes = document.querySelectorAll("iframe");
 
-              if (iframes.length === 0) {
-                console.warn("❌ No iframes found.");
-                return null;
-              }
+  //             if (iframes.length === 0) {
+  //               console.warn("❌ No iframes found.");
+  //               return null;
+  //             }
 
-              for (const iframe of iframes) {
-                try {
-                  const iframeDoc =
-                    iframe.contentDocument || iframe.contentWindow.document;
+  //             for (const iframe of iframes) {
+  //               try {
+  //                 const iframeDoc =
+  //                   iframe.contentDocument || iframe.contentWindow.document;
 
-                  // Make sure selector is properly formatted (as ID)
-                  const IframelivePriceSelector = iframeDoc.querySelector(
-                    id?.livePrice
-                  );
-                  console.log(
-                    "IframelivePriceSelector =>",
-                    IframelivePriceSelector
-                  );
-                  // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
-                  const livePriceSelector = document.querySelector(
-                    id?.livePrice
-                  ).innerHTML;
+  //                 // Make sure selector is properly formatted (as ID)
+  //                 const IframelivePriceSelector = iframeDoc.querySelector(
+  //                   id?.livePrice
+  //                 );
+  //                 console.log(
+  //                   "IframelivePriceSelector =>",
+  //                   IframelivePriceSelector
+  //                 );
+  //                 // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
+  //                 const livePriceSelector = document.querySelector(
+  //                   id?.livePrice
+  //                 ).innerHTML;
 
-                  console.log("🔍 livePriceSelector =>", livePriceSelector);
+  //                 console.log("🔍 livePriceSelector =>", livePriceSelector);
 
-                  const qtySelector = document.querySelector(id?.qty).value;
-                  console.log("🔍 qtySelector =>", qtySelector);
+  //                 const qtySelector = document.querySelector(id?.qty).value;
+  //                 console.log("🔍 qtySelector =>", qtySelector);
 
-                  const limitPriceSelector = document.querySelector(
-                    id?.limitPrice
-                  ).value;
+  //                 const limitPriceSelector = document.querySelector(
+  //                   id?.limitPrice
+  //                 ).value;
 
-                  // const limitPriceSelector =document.querySelector('#tfdPrice').value || document.querySelector(
-                  //   id?.limitPrice
-                  // ).value;
+  //                 // const limitPriceSelector =document.querySelector('#tfdPrice').value || document.querySelector(
+  //                 //   id?.limitPrice
+  //                 // ).value;
 
-                  console.log("🔍 limitPriceSelector =>", limitPriceSelector);
-                  // const targetSelector = document.querySelector(id?.target)
-                  //   .value;
-                  // const stopLossSelector = document.querySelector(id?.stopLoss)
-                  //   .value;
+  //                 console.log("🔍 limitPriceSelector =>", limitPriceSelector);
+  //                 // const targetSelector = document.querySelector(id?.target)
+  //                 //   .value;
+  //                 // const stopLossSelector = document.querySelector(id?.stopLoss)
+  //                 //   .value;
 
-                  const trailJumpSelector = document.querySelector(
-                    id?.trailJump
-                  ).value;
+  //                 const trailJumpSelector = document.querySelector(
+  //                   id?.trailJump
+  //                 ).value;
 
-                  // console.log("🔍 targetSelector =>", targetSelector);
-                  // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
+  //                 // console.log("🔍 targetSelector =>", targetSelector);
+  //                 // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
 
-                  const allValues = {
-                    qty: qtySelector,
-                    livePrice: livePriceSelector,
-                    limitPrice: limitPriceSelector,
-                    // target: targetSelector|| 101 ,
-                    // stopLoss: stopLossSelector || 101,
-                    trailJump: trailJumpSelector || 101,
-                  };
-                  console.log("allValues =>", allValues);
-                  if (livePriceSelector) {
-                    console.log("✅ Found live price:", livePriceSelector);
-                    return allValues;
-                  }
-                  // if (limitPriceSelector) {
-                  //   console.log("✅ Found limitPrice :", limitPriceSelector);
-                  //   return limitPriceSelector;
+  //                 const allValues = {
+  //                   qty: qtySelector,
+  //                   livePrice: livePriceSelector,
+  //                   limitPrice: limitPriceSelector,
+  //                   // target: targetSelector|| 101 ,
+  //                   // stopLoss: stopLossSelector || 101,
+  //                   trailJump: trailJumpSelector || 101,
+  //                 };
+  //                 console.log("allValues =>", allValues);
+  //                 if (livePriceSelector) {
+  //                   console.log("✅ Found live price:", livePriceSelector);
+  //                   return allValues;
+  //                 }
+  //                 // if (limitPriceSelector) {
+  //                 //   console.log("✅ Found limitPrice :", limitPriceSelector);
+  //                 //   return limitPriceSelector;
 
-                  // }
-                } catch (error) {
-                  console.warn("⚠️ Failed to access iframe:", error);
-                }
-              }
+  //                 // }
+  //               } catch (error) {
+  //                 console.warn("⚠️ Failed to access iframe:", error);
+  //               }
+  //             }
 
-              return null; // if nothing found
-            },
-          },
-          (results) => {
-            if (chrome.runtime.lastError) {
-              console.error(
-                "⛔ Runtime error:",
-                chrome.runtime.lastError.message
-              );
-              reject(chrome.runtime.lastError.message);
-            } else {
-              const value = results?.[0]?.result;
-              console.log("🎯 Final result from injected script:", value);
-              resolve(value);
-            }
-          }
-        );
-      });
-    });
-  };
+  //             return null; // if nothing found
+  //           },
+  //         },
+  //         (results) => {
+  //           if (chrome.runtime.lastError) {
+  //             console.error(
+  //               "⛔ Runtime error:",
+  //               chrome.runtime.lastError.message
+  //             );
+  //             reject(chrome.runtime.lastError.message);
+  //           } else {
+  //             const value = results?.[0]?.result;
+  //             console.log("🎯 Final result from injected script:", value);
+  //             resolve(value);
+  //           }
+  //         }
+  //       );
+  //     });
+  //   });
+  // };
 
   return (
     <div className="mt-9">
@@ -208,12 +208,7 @@ const OrderDetails = () => {
       <div className="mb-9 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
-            {/* Hidden native checkbox to track checked state */}
-            {/* <input type="checkbox" className="peer hidden" /> */}
-            {/* Custom checkbox box */}
-            {/* <div className="w-6 h-6 flex items-center justify-center border-2 border-teal-600 rounded-md bg-white peer-checked:bg-teal-600 peer-checked:border-teal-600 transition-all">
-              <IoCheckmark className="text-white text-lg opacity-0 peer-checked:opacity-100 transition-opacity" />
-            </div> */}
+           
             Target : {targerPer}%
           </label>
 

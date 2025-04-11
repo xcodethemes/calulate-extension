@@ -31,12 +31,18 @@ export const settingsSlice = createSlice({
       stopLoss: "",
       trailJump: "",
     },
-    targetSettings: { 
+    setPercentage: {
       setTargetPercentage: "",
       setStopLossPercentage: "",
     },
   },
   reducers: {
+    setTargetPercentage: (state, action) => {
+      state.setPercentage.setTargetPercentage = action.payload;
+    },
+    setStopLossPercentage: (state, action) => {
+      state.setPercentage.setStopLossPercentage = action.payload;
+    },
     storeQtyValue: (state, action) => {
       state.fillValues.qty = action.payload;
     },
@@ -63,44 +69,12 @@ export const settingsSlice = createSlice({
         state.webSection[id] = value;
       }
     },
-    // setValues: (state, action) => {
-    //   const { id, value } = action.payload;
-    //   if (id in state.tvSection) {
-    //     state.tvSection[id] = value;
-    //   }
-    // },
-
-    // setValues: (state, action) => {
-    //   console.log("setValues action.payload=>", action.payload);
-    //   alert("setValues action.payload=>", action.payload);
-
-    //   if (action.payload.id === "livePrice") {
-    //     state.tvSection.livePrice = action.payload.value;
-    //   }
-    //   if (action.payload.id === "superTab") {
-    //     state.tvSection.superTab = action.payload.value;
-    //   }
-    //   if (action.payload.id === "buyID") {
-    //     state.tvSection.buyID = action.payload.value;
-    //   }
-    //   if (action.payload.id === "sellID") {
-    //     state.tvSection.sellID = action.payload.value;
-    //   }
-    //   if (action.payload.id === "limitPrice") {
-    //     state.tvSection.limitPrice = action.payload.value;
-    //   }
-    //   if (action.payload.id === "target") {
-    //     state.tvSection.target = action.payload.value;
-    //   }
-    //   if (action.payload.id === "stopLoss") {
-    //     state.tvSection.stopLoss = action.payload.value;
-    //   }
-    // },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
+  setTargetPercentage,
   storeQtyValue,
   storeLimitPriceValue,
   storeTargetValue,

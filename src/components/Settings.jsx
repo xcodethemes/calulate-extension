@@ -62,9 +62,6 @@ const Settings = ({ setView }) => {
     }
   }, [tvSection, webSection, active]);
 
-  
-
-
   // ✅ Handle copy to clipboard for any input field
   const handleCopy = (value, label) => {
     if (!value.trim()) {
@@ -102,11 +99,23 @@ const Settings = ({ setView }) => {
     { label: "Trail Jump" },
   ];
 
-  const handleChange = (label, option) => {
+  const handleChangeDrp = (label, option) => {
+    console.log("handleChange label=>", label, option);
     setSelectedOptions((prev) => ({
       ...prev,
-      [label]: option
+      [label]: option,
     }));
+    if(label==="Target"){
+      console.log('dispatch target percentage=>', option.value)
+      dispatch(setTargetPercentage({ value:option.value}))
+    }
+    if(label==="Stop Loss"){
+      dispatch(setStopLossPercentage({ value:option.value}))
+    }
+  };
+
+  const handleChange = (id, value) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSave = (section, value, id) => {
@@ -260,22 +269,25 @@ const Settings = ({ setView }) => {
           }
           return (
             <div key={index} className="flex mb-3 items-center justify-between">
-              <p className="text-left text-base">{item?.label}</p>
+              <div>
+                <span className="text-left text-base">{item?.label} </span>
+                {item?.label != "Trail Jump" && (
+                  <span className="w-1/3 text-sm">
+                    {selectedOptions[item.label]
+                      ? ` : ${selectedOptions[item.label].label}`
+                      : ""}
+                  </span>
+                )}
+              </div>
+
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
                 <Select
-                options={percentageDropdown}
-                onChange={(option) => handleChange(item.label, option)}
-                value={selectedOptions[item.label] || null}
-                placeholder="Select percentage"
-              />
-              )}
-              {item?.label != "Trail Jump" && (
-                <span className="w-1/3">
-                {selectedOptions[item.label]
-                  ? `Selected: ${selectedOptions[item.label].label}`
-                  : "No selection"}
-              </span>
+                  options={percentageDropdown}
+                  onChange={(option) => handleChangeDrp(item.label, option,)}
+                  value={selectedOptions[item.label] || null}
+                  placeholder="Select percentage"
+                />
               )}
             </div>
           );
