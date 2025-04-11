@@ -21,21 +21,6 @@ const QuantityInput = ({ value, id , setValue }) => {
     }
   };
 
-  // const handleDecrease = (e) => {
-  //   setQuantity((prev) => Math.max(prev - 1, 1));
-  // };
-
-  // const handleIncrease = (e) => {
-  //   setQuantity((prev) => prev + 1);
-  // };
-
-  // const handleChange = (e) => {
-  //   const value = parseInt(e.target.value, 10);
-  //   if (!isNaN(value) && value > 0) {
-  //     setQuantity(value);
-  //   }
-  // };
-
   return (
     <div className="w-[130px] flex items-center border border-teal-600 rounded overflow-hidden">
       {/* <button

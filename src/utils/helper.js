@@ -46,13 +46,13 @@ export const handleCalculation = () => {
 };
 
 //handle Buy Click
-export const handleBuyClick = (ID) => {
-  console.log("handleBuyClick ID==>", ID);
+export const handleBuyClick = (ID,superTab) => {
+  console.log("handleBuyClick ID==>", ID, superTab);
 
-  if (!ID.trim()) {
-    alert("Please enter a valid ID before trading.");
-    return;
-  }
+  // if (!ID) {
+  //   alert("Please enter a valid ID before trading.");
+  //   return;
+  // }
 
   if (typeof chrome !== "undefined" && chrome.tabs) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -65,9 +65,9 @@ export const handleBuyClick = (ID) => {
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
 
-        args: [ID],
+        args: [ID, superTab],
 
-        function: (ID) => {
+        function: (ID, superTab) => {
           console.log("✅ Checking for iframes...");
 
           // Handle iframes
@@ -89,9 +89,12 @@ export const handleBuyClick = (ID) => {
 
               const buyBtn = iframeDoc.querySelector(btnSelector);
               console.log("buyBtn=>", buyBtn);
+              const superTabBtn = iframeDoc.querySelector(superTab);
+              console.log("superTabBtn=>", superTabBtn);
 
               if (buyBtn) {
                 buyBtn.click();
+                // superTabBtn.click();
                 console.log("✅ Button clicked inside iframe!");
                 found = true;
                 break;

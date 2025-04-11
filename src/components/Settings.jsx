@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setValues } from "../features/settings/settingsSlice";
+import { setStopLossPercentage, setTargetPercentage, setValues } from "../features/settings/settingsSlice";
 
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { IoCopyOutline } from "react-icons/io5";
@@ -22,18 +22,12 @@ const Settings = ({ setView }) => {
   const [selectedOptions, setSelectedOptions] = useState({});
 
   const { tvSection, webSection } = useSelector((state) => state?.settings);
-  console.log("getAllValues=>", tvSection);
+  console.log("getAllValues tvSection=>", tvSection);
+  console.log("getAllValues webSection=>", webSection);
 
   const [active, setActive] = useState(TABS.TV_SECTION);
   console.log("active=>", active);
 
-  // const [livePrice, setLivePrice] = useState("");
-  // const [superTab, setSuperTab] = useState("");
-  // const [buyID, setBuyId] = useState("");
-  // const [sellID, setSellId] = useState("");
-  // const [limitPrice, setLimitPrice] = useState("");
-  // const [target, setTarget] = useState("");
-  // const [stopLoss, setStopLoss] = useState("");
 
   const [formData, setFormData] = useState({
     livePrice: "",
@@ -47,6 +41,7 @@ const Settings = ({ setView }) => {
   });
 
   useEffect(() => {
+    console.log('$$$ see active', active)
     if (active === TABS.TV_SECTION) {
       setFormData((prev) => ({
         ...prev,
@@ -55,6 +50,7 @@ const Settings = ({ setView }) => {
     }
 
     if (active === TABS.WEB_SECTION) {
+      console.log('In web section****')
       setFormData((prev) => ({
         ...prev,
         ...webSection,
@@ -107,10 +103,11 @@ const Settings = ({ setView }) => {
     }));
     if(label==="Target"){
       console.log('dispatch target percentage=>', option.value)
-      dispatch(setTargetPercentage({ value:option.value}))
+      dispatch(setTargetPercentage( option.value))
     }
     if(label==="Stop Loss"){
-      dispatch(setStopLossPercentage({ value:option.value}))
+      console.log('dispatch stop loss percentage=>', option.value)
+      dispatch(setStopLossPercentage(option.value))
     }
   };
 

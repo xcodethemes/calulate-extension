@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import "./App.css";
 
-import { handleBuyClick, handleCalculation, handleFillValues } from "./utils/helper";
+import {
+  handleBuyClick,
+  handleCalculation,
+  handleFillValues,
+} from "./utils/helper";
 import Settings from "./components/Settings";
 import Notes from "./components/Notes";
 import Header from "./components/Header";
@@ -18,8 +22,9 @@ import Pro from "./components/Pro";
 const App = () => {
   const filledValues = useSelector((state) => state?.settings?.fillValues);
   console.log("extension value=>", filledValues?.stopLoss);
-  const buyID = useSelector((state) => state?.settings?.buyID);
-  const sellID = useSelector((state) => state?.settings?.sellID);
+  const buyID = useSelector((state) => state?.settings?.tvSection?.buyID);
+  const sellID = useSelector((state) => state?.settings?.tvSection?.sellID);
+  const superTab = useSelector((state) => state?.settings?.tvSection?.superTab);
 
   const [view, setView] = useState("main"); // 'main', 'settings', 'notes'
 
@@ -102,15 +107,13 @@ const App = () => {
           <OrderDetails />
 
           <div className="my-3">
-           
-
             {/* <div className="flex justify-center items-center gap-2"> */}
             <div className="grid grid-cols-2 gap-2 mb-1.5">
               <button
                 id="buyBtn"
                 name="buyBtn"
-                onClick={() => handleBuyClick(buyID)}
-                className="flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
+                onClick={() => handleBuyClick(buyID, superTab)}
+                className="flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Buy
               </button>
@@ -118,40 +121,38 @@ const App = () => {
               <button
                 id="sellBtn"
                 name="sellBtn"
-                onClick={() => handleBuyClick(sellID)}
-                className="flex gap-2 justify-center items-center bg-red-600 hover:bg-red-700 text-white text-base py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
+                onClick={() => handleBuyClick(sellID, superTab)}
+                className="flex gap-2 justify-center items-center bg-red-600 hover:bg-red-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Sell
               </button>
             </div>
 
-             <div className="flex justify-center items-center mb-2">
+            <div className="flex justify-center items-center mb-2">
               <button
                 id="fillValues"
                 name="fillValues"
-              
                 onClick={() => {
-                  handleFillValues(filledValues);
+                  if (
+                    filledValues?.trailJump == "Off" ||
+                    filledValues?.trailJump == "" ||
+                    filledValues?.qty == "" ||
+                    filledValues?.limitPrice == "" ||
+                    filledValues?.target == "" ||
+                    filledValues?.stopLoss == ""
+                  ) {
+                    alert("Please fill all the values");
+                  } else {  
+                    handleFillValues(filledValues);
+                  }
                 }}
-                className=" flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-3 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
+                className=" flex gap-2 justify-center items-center bg-blue-500 hover:bg-blue-700 text-white text-base w-full py-2 px-0 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Fill values
               </button>
             </div>
-            
-            {/* <div>
-              <h1 className="text-xl font-bold text-gray-700">
-                Perform Calculations
-              </h1>
-              <button
-                onClick={() => handleCalculation()}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-              >
-                Do Calculation
-              </button>
-            </div> */}
           </div>
-             <Pro/>
+          <Pro />
         </>
       )}
 
@@ -161,7 +162,6 @@ const App = () => {
       {/* ✅ Notes Section */}
       {view === "notes" && <Notes setView={setView} />}
 
-     
       <Footer />
     </div>
   );
