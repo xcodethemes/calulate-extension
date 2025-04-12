@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "React Input Calculation",
+  "name": "TradeX",
   "version": "1.0",
-  "description": "React Multiplies all number inputs by 2 on the page",
+  "description": "One Click trades.",
 
   "icons": {
     "16": "icons/icon-16.png",
@@ -21,7 +21,7 @@
     }
   },
 
-  "permissions": ["scripting", "activeTab", "storage"],
+  "permissions": ["scripting", "activeTab", "storage", "tabs"],
 
   "background": {
     "service_worker": "background.js",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import "./App.css";
 
@@ -18,67 +18,53 @@ import { IoChatboxEllipsesOutline, IoSettingsOutline } from "react-icons/io5";
 import OrderDetails from "./components/OrderDetails";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import Pro from "./components/Pro";
+import { use } from "react";
+
 
 const App = () => {
+
+  const [url, setUrl] = useState("");
+  const [sectionType, setSectionType] = useState("");
+  const [sectionData, setSectionData] = useState({});
+
   const filledValues = useSelector((state) => state?.settings?.fillValues);
   console.log("extension value=>", filledValues?.stopLoss);
+
+  const tvSection = useSelector((state) => state?.settings?.tvSection);
+  const webSection = useSelector((state) => state?.settings?.webSection);
+
   const buyID = useSelector((state) => state?.settings?.tvSection?.buyID);
   const sellID = useSelector((state) => state?.settings?.tvSection?.sellID);
   const superTab = useSelector((state) => state?.settings?.tvSection?.superTab);
 
   const [view, setView] = useState("main"); // 'main', 'settings', 'notes'
 
-  const storedBuyID = localStorage?.getItem("buyID") || "";
+  useEffect(() => {
+    console.log('URL in useEffect=>>');
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]) {
+        setUrl(tabs[0].url || "");
+       
+      }
+    })
+  }
 
-  console.log("storedBuyID from Outside=>", storedBuyID);
+  }, [url]);
+
+  console.log('check url=>>', url);
+
+  useEffect(()=>{
+    setSectionType(url?.includes('web') ? 'web' : 'tv');
+    setSectionData(url?.includes('web') ? webSection : tvSection);
+  },[sectionType,url, sectionData])
+
+  // const sectionData = url?.includes('web');
+  // const sectionData = url?.includes('web') ? webSection : tvSection;
+  console.log('sectionData=>>', sectionData);
+  console.log("sectionType=>>", sectionType);
+  
   console.log("In app buyID from Outside=>", buyID);
-
-  // const handleFillValues = () => {
-  //   console.log("handleFillValues Clicked!!");
-
-  //   if (typeof chrome !== "undefined" && chrome.tabs) {
-  //     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  //       if (tabs.length === 0) {
-  //         console.error("No active tab found.");
-  //         return;
-  //       }
-
-  //       chrome.scripting.executeScript({
-  //         target: { tabId: tabs[0].id },
-  //         args: [filledValues],
-  //         function: (filledValues) => {
-  //           // const inputs = document?.querySelector(allIds?.stopLoss) || document.querySelector('#tfdSLPrice');
-  //           const qtyInput = document.querySelector("#tfdQuantity");
-  //           const limitPriceInput = document.querySelector("#tfdPrice");
-  //           const stopLossInput = document.querySelector("#tfdSLPrice");
-  //           const targetInput = document.querySelector("#tfdTargetPrice");
-  //           const trailJumpInput = document.querySelector(
-  //             "#tfdEnableTrailJumpValue"
-  //           );
-
-  //           // console.log("Check stop loss inputs==>", inputs);
-  //           // if (inputs.length === 0) {
-  //           //   console.log("No number inputs found.");
-  //           //   return;
-  //           // }
-
-  //           console.log("extension obj=>", filledValues);
-  //           qtyInput.value = filledValues?.qty;
-  //           limitPriceInput.value = filledValues?.limitPrice;
-  //           stopLossInput.value = filledValues?.stopLoss;
-  //           targetInput.value = filledValues?.target;
-  //           trailJumpInput.value = filledValues?.trailJump;
-
-  //           console.log("Fill Values!");
-  //         },
-  //       });
-  //     });
-  //   } else {
-  //     console.warn(
-  //       "Chrome API is not available. Run this as a Chrome extension."
-  //     );
-  //   }
-  // };
 
   return (
     <div className="p-0">
@@ -104,7 +90,7 @@ const App = () => {
 
           <CountdownTimer />
 
-          <OrderDetails />
+          <OrderDetails allIds={sectionData} type={sectionType}/>
 
           <div className="my-3">
             {/* <div className="flex justify-center items-center gap-2"> */}
@@ -112,7 +98,8 @@ const App = () => {
               <button
                 id="buyBtn"
                 name="buyBtn"
-                onClick={() => handleBuyClick(buyID, superTab)}
+                // onClick={() => handleBuyClick(buyID, superTab)}
+                onClick={() => handleBuyClick(sectionData, sectionData?.buyID,sectionData?.buyTrailJumpCheckbox )}
                 className="flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Buy
@@ -121,7 +108,8 @@ const App = () => {
               <button
                 id="sellBtn"
                 name="sellBtn"
-                onClick={() => handleBuyClick(sellID, superTab)}
+                // onClick={() => handleBuyClick(sellID, superTab)}
+                onClick={() => handleBuyClick(sectionData, sectionData?.sellID, sectionData?.sellTrailJumpCheckbox)}
                 className="flex gap-2 justify-center items-center bg-red-600 hover:bg-red-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Sell

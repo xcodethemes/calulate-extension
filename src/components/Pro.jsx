@@ -1,13 +1,15 @@
-import React from 'react'
-import { FaStar } from 'react-icons/fa'
+import React from "react";
+import { FaStar } from "react-icons/fa";
 
 const Pro = () => {
   return (
     <div className="  border border-gray-300  mt-8 mb-2">
-        
-        <button className='flex gap-1.5 justify-center items-center bg-pro w-full py-2 text-base'> <FaStar className='text-lg' /> Get Pro</button>
+      <button className="flex gap-1.5 justify-center items-center bg-pro w-full py-2 text-base">
+        {" "}
+        <FaStar className="text-lg" /> Get Pro
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default Pro
+export default Pro;

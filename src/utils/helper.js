@@ -6,7 +6,7 @@ export const calculatePercentageValue = (value, percentage) => {
     return 0;
   }
   return (value * percentage) / 100;
-}
+};
 
 //handle Calculations
 export const handleCalculation = () => {
@@ -46,14 +46,8 @@ export const handleCalculation = () => {
 };
 
 //handle Buy Click
-export const handleBuyClick = (ID,superTab) => {
-  console.log("handleBuyClick ID==>", ID, superTab);
-
-  // if (!ID) {
-  //   alert("Please enter a valid ID before trading.");
-  //   return;
-  // }
-
+// export const handleBuyClick = (ID, superTab) => {
+export const handleBuyClick = (data, id, checkBoxId) => {
   if (typeof chrome !== "undefined" && chrome.tabs) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs.length === 0) {
@@ -64,48 +58,34 @@ export const handleBuyClick = (ID,superTab) => {
       // Inject script into the active tab
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
-
-        args: [ID, superTab],
-
-        function: (ID, superTab) => {
+        args: [data, id, checkBoxId],
+        function: (data, id, checkBoxId) => {
           console.log("✅ Checking for iframes...");
 
-          // Handle iframes
-          const iframes = document.querySelectorAll("iframe");
+          const isBuySellBtn = document.querySelector(id);
 
-          if (iframes.length === 0) {
-            console.warn("❌ No iframes found.");
-            return;
-          }
+          if (isBuySellBtn) {
+            isBuySellBtn.click();
 
-          let found = false;
+            setTimeout(() => {
+              const isShadowRoot =
+                document
+                  ?.querySelector("#orderTypeList")
+                  ?.shadowRoot?.querySelector(data?.superTab) || "";
 
-          for (const iframe of iframes) {
-            try {
-              const iframeDoc =
-                iframe.contentDocument || iframe.contentWindow.document;
-
-              const btnSelector = ID;
-
-              const buyBtn = iframeDoc.querySelector(btnSelector);
-              console.log("buyBtn=>", buyBtn);
-              const superTabBtn = iframeDoc.querySelector(superTab);
-              console.log("superTabBtn=>", superTabBtn);
-
-              if (buyBtn) {
-                buyBtn.click();
-                // superTabBtn.click();
-                console.log("✅ Button clicked inside iframe!");
-                found = true;
-                break;
+              if (isShadowRoot) {
+                console.log("super tab btn clicked");
+                isShadowRoot.click();
               }
-            } catch (error) {
-              console.warn("⚠️ Failed to access iframe:", error);
-            }
-          }
 
-          if (!found) {
-            console.warn('❌ No "buy" button found in any iframe.');
+              const checkbox = document.querySelector(checkBoxId);
+              console.log(
+                "trailJumpCheckbox =>",
+                document.querySelector(data?.trailJumpCheckbox)
+              );
+
+              if (checkbox) checkbox.click();
+            }, 300);
           }
         },
       });
@@ -166,8 +146,8 @@ export const handleFillValues = (filledValues) => {
 };
 
 //handle getAllValues
-export const getAllValues = (id) => {
-  console.log("getAllValues id =>", id);
+export const getAllValues = (id, type) => {
+  console.log("getAllValues id =>", id, type);
 
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -180,85 +160,103 @@ export const getAllValues = (id) => {
       chrome.scripting.executeScript(
         {
           target: { tabId: tabs[0].id },
-          args: [id],
-          func: (id) => {
+          args: [id, type],
+          func: (id, type) => {
             console.log("✅ Checking for iframes...");
-            console.log("✅ Checking for id...", id);
-            const iframes = document.querySelectorAll("iframe");
+            console.log("✅ Checking for getAllValues id...", id);
+           
+            if (type === "web") {
+              console.log("-----web---------");
 
-            if (iframes.length === 0) {
-              console.warn("❌ No iframes found.");
-              return null;
-            }
+              const qtySelector = document.querySelector(id?.qty)?.value;
+              console.log('document.querySelector(id?.qty)?.value=>', document.querySelector(id?.qty)?.value)
 
-            for (const iframe of iframes) {
-              try {
-                const iframeDoc =
-                  iframe.contentDocument || iframe.contentWindow.document;
+              const livePriceSelector = document.querySelector(id?.livePrice)?.innerText;
 
-                // Make sure selector is properly formatted (as ID)
-                const IframelivePriceSelector = iframeDoc.querySelector(
-                  id?.livePrice
-                );
-                console.log(
-                  "IframelivePriceSelector =>",
-                  IframelivePriceSelector
-                );
-                // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
-                const livePriceSelector = document.querySelector(
-                  id?.livePrice
-                ).innerHTML;
+              const limitPriceSelector = document.querySelector(
+                id?.limitPrice
+              )?.value;
 
-                console.log("🔍 livePriceSelector =>", livePriceSelector);
+              const trailJumpSelector = document.querySelector(
+                id?.trailJump
+              )?.value;
 
-                const qtySelector = document.querySelector(id?.qty).value;
-                console.log("🔍 qtySelector =>", qtySelector);
 
-                const limitPriceSelector = document.querySelector(
-                  id?.limitPrice
-                ).value;
-
-                // const limitPriceSelector =document.querySelector('#tfdPrice').value || document.querySelector(
-                //   id?.limitPrice
-                // ).value;
-
-                console.log("🔍 limitPriceSelector =>", limitPriceSelector);
-                // const targetSelector = document.querySelector(id?.target)
-                //   .value;
-                // const stopLossSelector = document.querySelector(id?.stopLoss)
-                //   .value;
-
-                const trailJumpSelector = document.querySelector(
-                  id?.trailJump
-                ).value;
-
-                // console.log("🔍 targetSelector =>", targetSelector);
-                // console.log("🔍 livePriceSelector124 =>", document.querySelector('#tfdltp').innerHTML);
-
-                const allValues = {
-                  qty: qtySelector,
-                  livePrice: livePriceSelector,
-                  limitPrice: limitPriceSelector,
-                  // target: targetSelector|| 101 ,
-                  // stopLoss: stopLossSelector || 101,
-                  trailJump: trailJumpSelector || 101,
-                };
-                console.log("allValues =>", allValues);
-                if (livePriceSelector) {
-                  console.log("✅ Found live price:", livePriceSelector);
-                  return allValues;
-                }
-                // if (limitPriceSelector) {
-                //   console.log("✅ Found limitPrice :", limitPriceSelector);
-                //   return limitPriceSelector;
-
-                // }
-              } catch (error) {
-                console.warn("⚠️ Failed to access iframe:", error);
+              const allValues = {
+                qty: qtySelector,
+                livePrice: livePriceSelector,
+                limitPrice: limitPriceSelector,
+                // target: targetSelector|| 101 ,
+                // stopLoss: stopLossSelector || 101,
+                trailJump: trailJumpSelector || '',
+              };
+              console.log("allValues =>", allValues);
+              if (livePriceSelector) {
+                console.log("✅ Found live price:", livePriceSelector);
+                return allValues;
               }
-            }
+             
 
-            return null; // if nothing found
+            } else if (type === "tv") {
+              const iframes = document.querySelectorAll("iframe");
+
+              if (iframes.length === 0) {
+                console.warn("❌ No iframes found.");
+                return null;
+              }
+              for (const iframe of iframes) {
+                try {
+                  const iframeDoc =
+                    iframe.contentDocument || iframe.contentWindow.document;
+
+                  // Make sure selector is properly formatted (as ID)
+                  const IframelivePriceSelector = iframeDoc.querySelector(
+                    id?.livePrice
+                  );
+                  console.log(
+                    "IframelivePriceSelector =>",
+                    IframelivePriceSelector
+                  );
+                  // const livePriceSelector = document.querySelector(id?.livePrice).innerHTML;
+                  const livePriceSelector = document.querySelector(
+                    id?.livePrice
+                  ).innerText;
+
+                  console.log("🔍 livePriceSelector =>", livePriceSelector);
+
+                  const qtySelector = document.querySelector(id?.qty).value;
+                  console.log("🔍 qtySelector =>", qtySelector);
+
+                  const limitPriceSelector = document.querySelector(
+                    id?.limitPrice
+                  ).value;
+
+                  console.log("🔍 limitPriceSelector =>", limitPriceSelector);
+
+                  const trailJumpSelector = document.querySelector(
+                    id?.trailJump
+                  ).value;
+
+                  const allValues = {
+                    qty: qtySelector,
+                    livePrice: livePriceSelector,
+                    limitPrice: limitPriceSelector,
+                    // target: targetSelector|| 101 ,
+                    // stopLoss: stopLossSelector || 101,
+                    trailJump: trailJumpSelector || 101,
+                  };
+                  console.log("allValues =>", allValues);
+                  if (livePriceSelector) {
+                    console.log("✅ Found live price:", livePriceSelector);
+                    return allValues;
+                  }
+                } catch (error) {
+                  console.warn("⚠️ Failed to access iframe:", error);
+                }
+              }
+
+              return null; // if nothing found
+            }
           },
         },
         (results) => {
@@ -278,4 +276,3 @@ export const getAllValues = (id) => {
     });
   });
 };
-

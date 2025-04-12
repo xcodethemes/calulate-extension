@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setStopLossPercentage, setTargetPercentage, setValues } from "../features/settings/settingsSlice";
+import {
+  setStopLossPercentage,
+  setTargetPercentage,
+  setValues,
+} from "../features/settings/settingsSlice";
 
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { IoCopyOutline } from "react-icons/io5";
@@ -9,9 +13,9 @@ import { FaArrowLeft } from "react-icons/fa6";
 import ToggleBtn from "./ui/ToggleBtn";
 import { IoMdQrScanner } from "react-icons/io";
 import {
-  addPercentage,
-  percentageDropdown,
+  stopLossPercentageDropdown,
   TABS,
+  targetPercentageDropdown,
   tvInputFields,
   webInputFields,
 } from "../utils/constant";
@@ -19,7 +23,11 @@ import Select from "react-select";
 
 const Settings = ({ setView }) => {
   const dispatch = useDispatch();
-  const [selectedOptions, setSelectedOptions] = useState({});
+  // const [selectedOptions, setSelectedOptions] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState({
+    Target: targetPercentageDropdown[4], // Default to 2%
+    StopLoss: stopLossPercentageDropdown[1], // Default to 0.5%
+  });
 
   const { tvSection, webSection } = useSelector((state) => state?.settings);
   console.log("getAllValues tvSection=>", tvSection);
@@ -27,7 +35,6 @@ const Settings = ({ setView }) => {
 
   const [active, setActive] = useState(TABS.TV_SECTION);
   console.log("active=>", active);
-
 
   const [formData, setFormData] = useState({
     livePrice: "",
@@ -41,7 +48,7 @@ const Settings = ({ setView }) => {
   });
 
   useEffect(() => {
-    console.log('$$$ see active', active)
+    console.log("$$$ see active", active);
     if (active === TABS.TV_SECTION) {
       setFormData((prev) => ({
         ...prev,
@@ -50,7 +57,7 @@ const Settings = ({ setView }) => {
     }
 
     if (active === TABS.WEB_SECTION) {
-      console.log('In web section****')
+      console.log("In web section****");
       setFormData((prev) => ({
         ...prev,
         ...webSection,
@@ -96,20 +103,24 @@ const Settings = ({ setView }) => {
   ];
 
   const handleChangeDrp = (label, option) => {
+
+    console.log('selectedOptions 123=>', selectedOptions, 'option=>', option)
     console.log("handleChange label=>", label, option);
     setSelectedOptions((prev) => ({
       ...prev,
       [label]: option,
     }));
-    if(label==="Target"){
-      console.log('dispatch target percentage=>', option.value)
-      dispatch(setTargetPercentage( option.value))
+
+    if (label === "Target") {
+      console.log("dispatch target percentage=>", option.value);
+      dispatch(setTargetPercentage(option.value));
     }
-    if(label==="Stop Loss"){
-      console.log('dispatch stop loss percentage=>', option.value)
-      dispatch(setStopLossPercentage(option.value))
+    if (label === "Stop Loss") {
+      console.log("dispatch stop loss percentage=>", option.value);
+      dispatch(setStopLossPercentage(option.value));
     }
   };
+
 
   const handleChange = (id, value) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -128,10 +139,6 @@ const Settings = ({ setView }) => {
 
   const inputFields =
     active === TABS.TV_SECTION ? tvInputFields : webInputFields;
-
-  useEffect(() => {
-    console.log("in useffect active=>", inputFields);
-  }, [active]);
 
   return (
     <div>
@@ -230,6 +237,7 @@ const Settings = ({ setView }) => {
         {/* ////map */}
       </div>
 
+      {/* Top Menu */}
       <div className="mt-9">
         {topMenu?.map((item, index) => {
           if (item?.heading) {
@@ -244,6 +252,7 @@ const Settings = ({ setView }) => {
         })}
       </div>
 
+      {/* Chart Settings */}
       <div className="mt-9">
         {chartSettings?.map((item, index) => {
           if (item?.heading) {
@@ -259,6 +268,7 @@ const Settings = ({ setView }) => {
         })}
       </div>
 
+      {/* Set Percentage */}
       <div className="mt-9">
         {targetSettings?.map((item, index) => {
           if (item?.heading) {
@@ -279,12 +289,20 @@ const Settings = ({ setView }) => {
 
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
+               
                 <Select
-                  options={percentageDropdown}
-                  onChange={(option) => handleChangeDrp(item.label, option,)}
+                  options={
+                    item?.label === "Target"
+                      ? targetPercentageDropdown
+                      : item?.label === "Stop Loss"
+                      ? stopLossPercentageDropdown
+                      : []
+                  }
+                  onChange={(option) => handleChangeDrp(item.label, option)}
                   value={selectedOptions[item.label] || null}
                   placeholder="Select percentage"
                 />
+                
               )}
             </div>
           );

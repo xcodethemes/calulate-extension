@@ -6,7 +6,7 @@ import ToggleBtn from "./ui/ToggleBtn";
 import { IoCheckmark } from "react-icons/io5";
 import CustomCheckbox from "./ui/CustomCheckbox";
 import { useDispatch, useSelector } from "react-redux";
-import { addPercentage } from "../utils/constant";
+import { addPercentage, stopLossAddPercentage, targetAddPercentage } from "../utils/constant";
 import { calculatePercentageValue, getAllValues } from "../utils/helper";
 import {
   setTrailJumpValue,
@@ -16,22 +16,29 @@ import {
   storeTargetValue,
 } from "../features/settings/settingsSlice";
 
-const OrderDetails = () => {
+const OrderDetails = ({ allIds, type }) => {
+  console.log("allIds from OrderDetails=>", allIds, type);
   const dispatch = useDispatch();
-  const setPercentageValue = useSelector((state) => state?.settings?.setPercentage);
+  const setPercentageValue = useSelector(
+    (state) => state?.settings?.setPercentage
+  );
 
   const [toggleMarketPrice, setToggleMarketPrice] = useState(false);
-  const [livePrice, setLivePrice] = useState('');
+  const [livePrice, setLivePrice] = useState("");
   const [limitPrice, setLimitPrice] = useState("");
   const [target, setAddTarget] = useState(0);
   const [stopLoss, setStopLoss] = useState(0);
-  const [trailJump, setTrailJump] = useState('');
-  const [qty, setQty] = useState('');
+  const [trailJump, setTrailJump] = useState("");
+  const [qty, setQty] = useState("");
 
-  const [targerPer, setTargerPer] = useState(setPercentageValue?.setTargetPercentage || '');
-  const [stopLossPer, setStopLossPer] = useState(setPercentageValue?.setStopLossPercentage || '');
+  const [targerPer, setTargerPer] = useState(
+    setPercentageValue?.setTargetPercentage || ""
+  );
+  const [stopLossPer, setStopLossPer] = useState(
+    setPercentageValue?.setStopLossPercentage || ""
+  );
 
-  const allIds = useSelector((state) => state?.settings?.tvSection);
+  // const allIds = useSelector((state) => state?.settings?.tvSection);
   console.log("allIds from OrderDetails=>", allIds);
 
   const handleToggleChange = (value) => {
@@ -39,33 +46,29 @@ const OrderDetails = () => {
     console.log("Toggle changed to:", value);
   };
 
-
   useEffect(() => {
-  
     console.log("UseEffect called OrderDetails");
     console.log("qty =>", qty);
-    if(qty) {
+    if (qty) {
       dispatch(storeQtyValue(qty));
     }
-    if(limitPrice)
-    {
+    if (limitPrice) {
       dispatch(storeLimitPriceValue(limitPrice));
     }
-    if(trailJump)
-    {
-
+    if (trailJump) {
       dispatch(setTrailJumpValue(trailJump));
     }
   }, [qty, limitPrice, trailJump]);
 
   useEffect(() => {
-    console.log("UseEffect called #tfdQuantity");
-    // if (!allIds?.livePrice || !allIds?.limitPrice) return;
+    console.log("****UseEffect called allIds==>***", allIds);
+    // if (!allIds) return;
+    if(Object.keys(allIds)?.length===0) return;
 
-    getAllValues(allIds)
+    getAllValues(allIds, type)
       .then((price) => {
         console.log("🚀 Live price fetched:", price);
-        setQty(price?.qty || '');
+        setQty(price?.qty || "");
         setLivePrice(price?.livePrice);
         setLimitPrice(price?.limitPrice || "");
         setAddTarget(price?.target || "");
@@ -75,7 +78,7 @@ const OrderDetails = () => {
       .catch((err) => {
         console.error("❌ Failed to get live price:", err);
       });
-  }, []);
+  }, [allIds]);
 
   return (
     <div className="mt-9">
@@ -104,22 +107,21 @@ const OrderDetails = () => {
         <h4>Limit Price at</h4>
         <div className="flex items-center gap-4">
           {/* <ToggleBtn toggle={setToggleMarketPrice}/> */}
-          <ToggleBtn onToggle={handleToggleChange}/>
+          <ToggleBtn onToggle={handleToggleChange} />
           {/* {!toggleMarketPrice ? "Market Price": <QuantityInput value={limitPrice} setValue={setLimitPrice} />} */}
           {/* <QuantityInput value={limitPrice}  setValue={setLimitPrice} /> */}
           {!toggleMarketPrice ? (
-      <div className="w-[130px] flex items-center justify-center gap-2 border border-teal-700 rounded py-0.5">
-
-        {/* <div className="w-full  "> */}
-        <p className="font-semibold text-teal-700 text-center text-base">Market</p>
-        <IoLockClosedOutline className="font-semibold text-teal-700 text-base" />
-        {/* </div> */}
-
-    
-      </div>
-    ) : (
-      <QuantityInput value={limitPrice} setValue={setLimitPrice} />
-    )}
+            <div className="w-[130px] flex items-center justify-center gap-2 border border-teal-700 rounded py-0.5">
+              {/* <div className="w-full  "> */}
+              <p className="font-semibold text-teal-700 text-center text-base">
+                Market
+              </p>
+              <IoLockClosedOutline className="font-semibold text-teal-700 text-base" />
+              {/* </div> */}
+            </div>
+          ) : (
+            <QuantityInput value={limitPrice} setValue={setLimitPrice} />
+          )}
         </div>
       </div>
 
@@ -127,7 +129,6 @@ const OrderDetails = () => {
       <div className="mb-9 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
-           
             Target : {targerPer}%
           </label>
 
@@ -141,7 +142,7 @@ const OrderDetails = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {addPercentage?.map((value, idx) => (
+          {targetAddPercentage?.map((value, idx) => (
             <button
               key={idx}
               onClick={(e) => {
@@ -189,7 +190,7 @@ const OrderDetails = () => {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {addPercentage?.map((value, idx) => (
+          {stopLossAddPercentage?.map((value, idx) => (
             <button
               key={idx}
               onClick={() => {
