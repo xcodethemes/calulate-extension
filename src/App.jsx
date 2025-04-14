@@ -6,6 +6,7 @@ import {
   handleBuyClick,
   handleCalculation,
   handleFillValues,
+  handleInstantOpen,
 } from "./utils/helper";
 import Settings from "./components/Settings";
 import Notes from "./components/Notes";
@@ -20,9 +21,7 @@ import { BsFillLightningChargeFill } from "react-icons/bs";
 import Pro from "./components/Pro";
 import { use } from "react";
 
-
 const App = () => {
-
   const [url, setUrl] = useState("");
   const [sectionType, setSectionType] = useState("");
   const [sectionData, setSectionData] = useState({});
@@ -40,31 +39,22 @@ const App = () => {
   const [view, setView] = useState("main"); // 'main', 'settings', 'notes'
 
   useEffect(() => {
-    console.log('URL in useEffect=>>');
+    console.log("URL in useEffect=>>");
     if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]) {
-        setUrl(tabs[0].url || "");
-       
-      }
-    })
-  }
-
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]) {
+          setUrl(tabs[0].url || "");
+        }
+      });
+    }
   }, [url]);
 
-  console.log('check url=>>', url);
+  console.log("check url=>>", url);
 
-  useEffect(()=>{
-    setSectionType(url?.includes('web') ? 'web' : 'tv');
-    setSectionData(url?.includes('web') ? webSection : tvSection);
-  },[sectionType,url, sectionData])
-
-  // const sectionData = url?.includes('web');
-  // const sectionData = url?.includes('web') ? webSection : tvSection;
-  console.log('sectionData=>>', sectionData);
-  console.log("sectionType=>>", sectionType);
-  
-  console.log("In app buyID from Outside=>", buyID);
+  useEffect(() => {
+    setSectionType(url?.includes("web") ? "web" : "tv");
+    setSectionData(url?.includes("web") ? webSection : tvSection);
+  }, [sectionType, url, sectionData]);
 
   return (
     <div className="p-0">
@@ -90,7 +80,7 @@ const App = () => {
 
           <CountdownTimer />
 
-          <OrderDetails allIds={sectionData} type={sectionType}/>
+          <OrderDetails allIds={sectionData} type={sectionType} />
 
           <div className="my-3">
             {/* <div className="flex justify-center items-center gap-2"> */}
@@ -98,8 +88,14 @@ const App = () => {
               <button
                 id="buyBtn"
                 name="buyBtn"
-                // onClick={() => handleBuyClick(buyID, superTab)}
-                onClick={() => handleBuyClick(sectionData, sectionData?.buyID,sectionData?.buyTrailJumpCheckbox )}
+                onClick={() =>
+                  handleInstantOpen(
+                    sectionData?.superTab,
+                    sectionData?.buyID,
+                    sectionData?.buyTrailJumpCheckbox,
+                    sectionType
+                  )
+                }
                 className="flex gap-2 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Buy
@@ -108,8 +104,14 @@ const App = () => {
               <button
                 id="sellBtn"
                 name="sellBtn"
-                // onClick={() => handleBuyClick(sellID, superTab)}
-                onClick={() => handleBuyClick(sectionData, sectionData?.sellID, sectionData?.sellTrailJumpCheckbox)}
+                onClick={() =>
+                  handleInstantOpen(
+                    sectionData?.superTab,
+                    sectionData?.sellID,
+                    sectionData?.sellTrailJumpCheckbox,
+                    sectionType
+                  )
+                }
                 className="flex gap-2 justify-center items-center bg-red-600 hover:bg-red-700 text-white text-base py-2 px-8 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Sell
@@ -130,7 +132,7 @@ const App = () => {
                     filledValues?.stopLoss == ""
                   ) {
                     alert("Please fill all the values");
-                  } else {  
+                  } else {
                     handleFillValues(filledValues);
                   }
                 }}

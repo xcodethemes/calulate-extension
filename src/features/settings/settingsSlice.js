@@ -17,17 +17,17 @@ export const settingsSlice = createSlice({
       sellTrailJumpCheckbox: "#tfdEnableTrailJump",
     },
     webSection: {
-      qty:"#mat-dialog-0 > app-miniplaceorder > div > div > div.orderSummery.ng-tns-c2870831140-25 > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-25 > div > div > div > div > div:nth-child(1) > div.numberinputcontainer.mt-4.ng-tns-c2870831140-25 > div > input",
-      livePrice: "#watchlist > div:nth-child(1) > div > mat-list-item > span > div > div:nth-child(1) > div:nth-child(1) > span.float-right.list_symbol_ltp.min-width-ltp.greenLtp",
+      qty:"#mat-dialog-2 > app-miniplaceorder > div > div > div.orderSummery.ng-tns-c2870831140-29 > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-29 > div > div > div > div > div:nth-child(1) > div.numberinputcontainer.mt-4.ng-tns-c2870831140-29 > div > input",
+      livePrice: "body > app-root > div.webpage > app-index > div.pageContainer > div > div > div.right_container > app-companypage > div.qoutesContent > div > div:nth-child(4) > div > div.col-xl-6.col-lg-6.col-md-6.left.pl-0 > div.left.pl-0 > div > div.d-flex.mt-3.paddingData.lh-25.pb-2 > div.lowHighBar > div > div.dataBoxForrange",
       superTab: "",
       buyID: "body > app-root > div.webpage > app-index > div.pageContainer > div > div > div.right_container > app-companypage > div.qoutesContent > div > div:nth-child(2) > div > div.p-3 > div > div:nth-child(1) > button.btn.buysellbtn.greenBG.mr-2.d-flex.justify-content-center.align-center",
       sellID: "body > app-root > div.webpage > app-index > div.pageContainer > div > div > div.right_container > app-companypage > div.qoutesContent > div > div:nth-child(2) > div > div.p-3 > div > div:nth-child(1) > button.btn.buysellbtn.mr-0.redBG.d-flex.justify-content-center.align-center",
-      limitPrice: "#mat-dialog-6 > app-miniplaceorder > div > div > div.orderSummery.ng-tns-c2870831140-37 > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-37 > div > div > div > div > div:nth-child(1) > div.mt-4.ml16.ng-tns-c2870831140-37 > div > input",
+      limitPrice: "#mat-dialog-1 > app-miniplaceorder > div > div > div.orderSummery.ng-tns-c2870831140-27 > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-27 > div > div > div > div > div:nth-child(1) > div.mt-4.ml16.ng-tns-c2870831140-27 > div > input",
       target: "#mat-dialog-0 > app-miniplaceorder > div > div > div > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-25 > div > div > div > div > div.d-flex.vtt.ng-tns-c2870831140-25.ng-star-inserted > div:nth-child(1) > input",
       stopLoss: "#mat-dialog-0 > app-miniplaceorder > div > div > div > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-25 > div > div > div > div > div.d-flex.vtt.ng-tns-c2870831140-25.ng-star-inserted > div:nth-child(2) > input",
       trailJump: "#mat-dialog-0 > app-miniplaceorder > div > div > div > form > div.widget.pl-3.pr-3.pb-3.borderNone.alertContainer.ng-tns-c2870831140-25 > div > div > div > div > div.d-flex.vtt.ng-tns-c2870831140-25.ng-star-inserted > div.position-relative.mt-4.ml16.ng-tns-c2870831140-25.ng-star-inserted > input",
-      buyTrailJumpCheckbox:'#mat-checkbox-4-input',
-      sellTrailJumpCheckbox:'#mat-checkbox-7-input',
+      buyTrailJumpCheckbox:'#mat-checkbox-26 > label > span.mat-checkbox-inner-container > input',
+      sellTrailJumpCheckbox:'#mat-checkbox-21-input',
     },
     fillValues: {
       qty: "",
@@ -37,8 +37,8 @@ export const settingsSlice = createSlice({
       trailJump: "",
     },
     setPercentage: {
-      setTargetPercentage: "",
-      setStopLossPercentage: "",
+      setTargetPercentage: 2,
+      setStopLossPercentage: 0.5,
     },
   },
   reducers: {

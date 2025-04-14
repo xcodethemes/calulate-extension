@@ -6,7 +6,11 @@ import ToggleBtn from "./ui/ToggleBtn";
 import { IoCheckmark } from "react-icons/io5";
 import CustomCheckbox from "./ui/CustomCheckbox";
 import { useDispatch, useSelector } from "react-redux";
-import { addPercentage, stopLossAddPercentage, targetAddPercentage } from "../utils/constant";
+import {
+  addPercentage,
+  stopLossAddPercentage,
+  targetAddPercentage,
+} from "../utils/constant";
 import { calculatePercentageValue, getAllValues } from "../utils/helper";
 import {
   setTrailJumpValue,
@@ -47,6 +51,27 @@ const OrderDetails = ({ allIds, type }) => {
   };
 
   useEffect(() => {
+    if (!livePrice) return;
+    console.log("***see livePrice*** =>", livePrice);
+    console.log("***see targerPer*** =>", targerPer);
+
+    const targetValue = (
+      parseFloat(livePrice) + calculatePercentageValue(livePrice, targerPer)
+    )?.toFixed(2);
+
+    console.log("see targetValue =>", targetValue);
+
+    const stopLossValue = (
+      parseFloat(livePrice) - calculatePercentageValue(livePrice, stopLossPer)
+    ).toFixed(2);
+
+    console.log("see stopLossValue =>", stopLossValue);
+
+    dispatch(storeTargetValue(targetValue));
+    dispatch(storeStopLossValue(stopLossValue));
+  }, [livePrice]);
+
+  useEffect(() => {
     console.log("UseEffect called OrderDetails");
     console.log("qty =>", qty);
     if (qty) {
@@ -63,12 +88,12 @@ const OrderDetails = ({ allIds, type }) => {
   useEffect(() => {
     console.log("****UseEffect called allIds==>***", allIds);
     // if (!allIds) return;
-    if(Object.keys(allIds)?.length===0) return;
+    if (Object.keys(allIds)?.length === 0) return;
 
     getAllValues(allIds, type)
       .then((price) => {
         console.log("🚀 Live price fetched:", price);
-        setQty(price?.qty || "");
+        setQty(price?.qty || 1);
         setLivePrice(price?.livePrice);
         setLimitPrice(price?.limitPrice || "");
         setAddTarget(price?.target || "");

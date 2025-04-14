@@ -20,17 +20,22 @@ import {
   webInputFields,
 } from "../utils/constant";
 import Select from "react-select";
+import QuantityInput from "./ui/QuantityInput";
 
 const Settings = ({ setView }) => {
   const dispatch = useDispatch();
-  // const [selectedOptions, setSelectedOptions] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState({
-    Target: targetPercentageDropdown[4], // Default to 2%
-    StopLoss: stopLossPercentageDropdown[1], // Default to 0.5%
-  });
+  const { tvSection, webSection, setPercentage } = useSelector(
+    (state) => state?.settings
+  );
+  const [selectedOptions, setSelectedOptions] = useState(setPercentage);
+   const [trailJump, setTrailJump] = useState(1);
 
-  const { tvSection, webSection } = useSelector((state) => state?.settings);
-  console.log("getAllValues tvSection=>", tvSection);
+  console.log(
+    "getAllValues tvSection=>",
+    tvSection,
+    "setPercentage=>",
+    setPercentage
+  );
   console.log("getAllValues webSection=>", webSection);
 
   const [active, setActive] = useState(TABS.TV_SECTION);
@@ -103,8 +108,7 @@ const Settings = ({ setView }) => {
   ];
 
   const handleChangeDrp = (label, option) => {
-
-    console.log('selectedOptions 123=>', selectedOptions, 'option=>', option)
+    console.log("selectedOptions 123=>", selectedOptions, "option=>", option);
     console.log("handleChange label=>", label, option);
     setSelectedOptions((prev) => ({
       ...prev,
@@ -120,7 +124,6 @@ const Settings = ({ setView }) => {
       dispatch(setStopLossPercentage(option.value));
     }
   };
-
 
   const handleChange = (id, value) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -280,8 +283,8 @@ const Settings = ({ setView }) => {
                 <span className="text-left text-base">{item?.label} </span>
                 {item?.label != "Trail Jump" && (
                   <span className="w-1/3 text-sm">
-                    {selectedOptions[item.label]
-                      ? ` : ${selectedOptions[item.label].label}`
+                    {selectedOptions[item?.label]
+                      ? ` : ${selectedOptions[item?.label]?.label}`
                       : ""}
                   </span>
                 )}
@@ -289,8 +292,8 @@ const Settings = ({ setView }) => {
 
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
-               
                 <Select
+                className="border border-teal-600  text-teal-600 rounded p-0"
                   options={
                     item?.label === "Target"
                       ? targetPercentageDropdown
@@ -298,12 +301,39 @@ const Settings = ({ setView }) => {
                       ? stopLossPercentageDropdown
                       : []
                   }
-                  onChange={(option) => handleChangeDrp(item.label, option)}
-                  value={selectedOptions[item.label] || null}
-                  placeholder="Select percentage"
-                />
+                  onChange={(option) => handleChangeDrp(item?.label, option)}
                 
+                  value={
+                    item?.label === "Target"
+                      ? targetPercentageDropdown.find(
+                          (opt) =>
+                            opt.value === setPercentage?.setTargetPercentage
+                        ) ?? selectedOptions[item?.label]
+                      : item?.label === "Stop Loss"
+                      ? stopLossPercentageDropdown.find(
+                          (opt) =>
+                            opt.value === setPercentage?.setStopLossPercentage
+                        ) ?? selectedOptions[item?.label]
+                      : selectedOptions[item?.label]
+                  }
+                  placeholder="Select percentage"
+                  styles={{
+                    singleValue: (provided, state) => ({
+                      ...provided,
+                      color: '#0d9488', // teal-600
+                      fontWeight: '600',
+                    }),
+                   
+                  }}
+                />
               )}
+               {item?.label === "Trail Jump" && (
+              <QuantityInput
+              id="settingsTrailJump"
+              value={trailJump}
+              setValue={setTrailJump}
+            />
+               )}
             </div>
           );
         })}

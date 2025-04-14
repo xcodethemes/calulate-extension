@@ -45,58 +45,6 @@ export const handleCalculation = () => {
   }
 };
 
-//handle Buy Click
-// export const handleBuyClick = (ID, superTab) => {
-export const handleBuyClick = (data, id, checkBoxId) => {
-  if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length === 0) {
-        console.error("No active tab found.");
-        return;
-      }
-
-      // Inject script into the active tab
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        args: [data, id, checkBoxId],
-        function: (data, id, checkBoxId) => {
-          console.log("✅ Checking for iframes...");
-
-          const isBuySellBtn = document.querySelector(id);
-
-          if (isBuySellBtn) {
-            isBuySellBtn.click();
-
-            setTimeout(() => {
-              const isShadowRoot =
-                document
-                  ?.querySelector("#orderTypeList")
-                  ?.shadowRoot?.querySelector(data?.superTab) || "";
-
-              if (isShadowRoot) {
-                console.log("super tab btn clicked");
-                isShadowRoot.click();
-              }
-
-              const checkbox = document.querySelector(checkBoxId);
-              console.log(
-                "trailJumpCheckbox =>",
-                document.querySelector(data?.trailJumpCheckbox)
-              );
-
-              if (checkbox) checkbox.click();
-            }, 300);
-          }
-        },
-      });
-    });
-  } else {
-    console.warn(
-      "Chrome API is not available. Run this as a Chrome extension."
-    );
-  }
-};
-
 //handle Fill Values
 export const handleFillValues = (filledValues) => {
   console.log("handleFillValues Clicked!!");
@@ -275,4 +223,135 @@ export const getAllValues = (id, type) => {
       );
     });
   });
+};
+
+
+export const handleInstantOpen = (superTab, btnId, checkBoxId, sectionType) => {
+  console.log("handleInstantSell ID==>", superTab, btnId, checkBoxId);
+
+  // if (!ID) {
+  //   alert("Please enter a valid ID before trading.");
+  //   return;
+  // }
+
+  if (typeof chrome !== "undefined" && chrome.tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length === 0) {
+        console.error("No active tab found.");
+        return;
+      }
+
+      // Inject script into the active tab
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+
+        args: [superTab, btnId, checkBoxId, sectionType],
+
+        function: (superTab, btnId, checkBoxId, sectionType) => {
+          console.log("✅ Checking for handleInstantSell iframes...");
+          console.log('btnId=>', btnId);
+
+          // Handle iframes
+          const iframes = document.querySelectorAll("iframe");
+          console.log('iframes length=>', iframes);
+
+          if (iframes.length === 0) {
+            console.warn("❌ No iframes found.");
+            return;
+          }
+          console.log('sectionType=>', sectionType)
+          console.log("Outside Iframe loop buyBtn=>", document.querySelector(btnId));
+
+         if(sectionType === 'web') {
+
+          const isBuySellBtn = document.querySelector(btnId);
+
+          if (isBuySellBtn) {
+            isBuySellBtn.click();
+
+            setTimeout(() => {
+              console.log('goimng in setTiemeout');
+              const isShadowRoot =
+                document
+                  ?.querySelector("#orderTypeList")
+                  ?.shadowRoot?.querySelector(superTab) || "";
+
+              if (isShadowRoot) {
+                console.log('going in shadowRoot???');
+                console.log("super tab btn clicked");
+                isShadowRoot.click();
+              }
+
+              const checkbox = document.querySelector(checkBoxId);
+              console.log(
+                "checkbox GETTING? =>",
+                checkbox
+              );
+
+              if (checkbox) 
+                {
+                console.log("checkbox clicked");
+                  checkbox.click();
+                }
+            }, 300);
+          }
+
+         }
+         else{
+          let found = false;
+
+          for (const iframe of iframes) {
+            try {
+              const iframeDoc =
+                iframe.contentDocument || iframe.contentWindow.document;
+
+              const btnSelector = btnId;
+
+              const buyBtn = iframeDoc.querySelector(btnSelector);
+              console.log("Inside Ifram loop buyBtn=>", buyBtn);
+              const superTabBtn = iframeDoc.querySelector(superTab);
+              console.log("superTabBtn=>", superTabBtn);
+
+              if (buyBtn) {
+                buyBtn.click();
+                // superTabBtn.click();
+                setTimeout(() => {
+                  {
+                    const isShadowRoot = document
+                      ?.querySelector("#orderTypeList")
+                      ?.shadowRoot?.querySelector(superTab) || '';
+
+                    if (isShadowRoot) {
+                      console.log("super tab btn clicked");
+                      isShadowRoot?.click();
+                    }
+
+                    //  document.querySelector("#tfdEnableTrailJump").click();
+                    console.log('sell trailJumpCheckbox=>', document.querySelector(checkBoxId));
+            
+                    document.querySelector(checkBoxId).click();
+                  }
+                }, 300);
+                console.log("✅ Instant Sell Button clicked inside iframe!");
+                found = true;
+                break;
+              }
+            } catch (error) {
+              console.warn("⚠️ Failed to access iframe:", error);
+            }
+          }
+
+          if (!found) {
+            console.warn('❌ No "buy" button found in any iframe.');
+          }
+         }
+          
+        },
+      });
+    });
+  } else {
+    console.warn(
+      "Chrome API is not available. Run this as a Chrome extension."
+    );
+  }
 };
