@@ -21,22 +21,18 @@ import {
 } from "../utils/constant";
 import Select from "react-select";
 import QuantityInput from "./ui/QuantityInput";
+import { handleShow } from "../utils/helper";
 
-const Settings = ({ setView }) => {
+const Settings = ({ setView, type, allIds }) => {
   const dispatch = useDispatch();
   const { tvSection, webSection, setPercentage } = useSelector(
     (state) => state?.settings
   );
   const [selectedOptions, setSelectedOptions] = useState(setPercentage);
-   const [trailJump, setTrailJump] = useState(1);
+  const [trailJump, setTrailJump] = useState(1);
 
-  console.log(
-    "getAllValues tvSection=>",
-    tvSection,
-    "setPercentage=>",
-    setPercentage
-  );
-  console.log("getAllValues webSection=>", webSection);
+
+
 
   const [active, setActive] = useState(TABS.TV_SECTION);
   console.log("active=>", active);
@@ -51,6 +47,20 @@ const Settings = ({ setView }) => {
     stopLoss: "",
     // trailJump: "",
   });
+
+  const [show, setShow] = useState({
+    buyBtn: false,
+    sellBtn: false,
+    scalperBtn: false,
+    chartBuyBtn: false,
+    chartSellBtn: false,
+  
+  });
+
+  useEffect(() => {
+    handleShow(show, type, allIds);
+   
+  }, [show]);
 
   useEffect(() => {
     console.log("$$$ see active", active);
@@ -89,15 +99,15 @@ const Settings = ({ setView }) => {
 
   const topMenu = [
     { heading: "Top Menu" },
-    { label: "Show Sell" },
-    { label: "Show Buy" },
-    { label: "Show Scalper" },
+    { label: "Show Sell", id: "sellBtn" },
+    { label: "Show Buy", id: "buyBtn" },  
+    { label: "Show Scalper", id: "scalperBtn" },
   ];
 
   const chartSettings = [
     { heading: "Chart Settings" },
-    { label: "Show Scalper" },
-    { label: "Show Buy" },
+    { label: "Show Sell", id: "chartSellBtn" },
+    { label: "Show Buy", id: "chartBuyBtn" },
   ];
 
   const targetSettings = [
@@ -140,8 +150,15 @@ const Settings = ({ setView }) => {
     dispatch(setValues(combinedValue));
   };
 
-  const inputFields =
-    active === TABS.TV_SECTION ? tvInputFields : webInputFields;
+  const inputFields = active === TABS.TV_SECTION ? tvInputFields : webInputFields;
+
+  const handleToggleChange = (id, value) => {
+    setShow((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+    console.log(`${id} toggled to:`, value);
+  };
 
   return (
     <div>
@@ -249,7 +266,9 @@ const Settings = ({ setView }) => {
           return (
             <div key={index} className="flex mb-3 items-center justify-between">
               <p className="text-left text-base">{item?.label}</p>
-              <ToggleBtn />
+              <ToggleBtn
+                onToggle={(val) => handleToggleChange(item?.id, val)}
+              />
             </div>
           );
         })}
@@ -265,7 +284,7 @@ const Settings = ({ setView }) => {
           return (
             <div key={index} className="flex mb-3 items-center justify-between">
               <p className="text-left text-base">{item?.label}</p>
-              <ToggleBtn />
+              <ToggleBtn onToggle={(val) => handleToggleChange(item?.id, val)}/>
             </div>
           );
         })}
@@ -293,7 +312,7 @@ const Settings = ({ setView }) => {
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
                 <Select
-                className="border border-teal-600  text-teal-600 rounded p-0"
+                  className="border border-teal-600  text-teal-600 rounded p-0"
                   options={
                     item?.label === "Target"
                       ? targetPercentageDropdown
@@ -302,7 +321,6 @@ const Settings = ({ setView }) => {
                       : []
                   }
                   onChange={(option) => handleChangeDrp(item?.label, option)}
-                
                   value={
                     item?.label === "Target"
                       ? targetPercentageDropdown.find(
@@ -320,20 +338,19 @@ const Settings = ({ setView }) => {
                   styles={{
                     singleValue: (provided, state) => ({
                       ...provided,
-                      color: '#0d9488', // teal-600
-                      fontWeight: '600',
+                      color: "#0d9488", // teal-600
+                      fontWeight: "600",
                     }),
-                   
                   }}
                 />
               )}
-               {item?.label === "Trail Jump" && (
-              <QuantityInput
-              id="settingsTrailJump"
-              value={trailJump}
-              setValue={setTrailJump}
-            />
-               )}
+              {item?.label === "Trail Jump" && (
+                <QuantityInput
+                  id="settingsTrailJump"
+                  value={trailJump}
+                  setValue={setTrailJump}
+                />
+              )}
             </div>
           );
         })}

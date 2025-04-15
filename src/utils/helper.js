@@ -46,7 +46,7 @@ export const handleCalculation = () => {
 };
 
 //handle Fill Values
-export const handleFillValues = (filledValues) => {
+export const handleFillValues = (filledValues, type, id) => {
   console.log("handleFillValues Clicked!!");
 
   if (typeof chrome !== "undefined" && chrome.tabs) {
@@ -58,16 +58,39 @@ export const handleFillValues = (filledValues) => {
 
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
-        args: [filledValues],
-        function: (filledValues) => {
+        args: [filledValues, type, id],
+        function: (filledValues, type, id) => {
+          console.log("filledValues in handleFillValues==>", filledValues);
           // const inputs = document?.querySelector(allIds?.stopLoss) || document.querySelector('#tfdSLPrice');
-          const qtyInput = document.querySelector("#tfdQuantity");
-          const limitPriceInput = document.querySelector("#tfdPrice");
-          const stopLossInput = document.querySelector("#tfdSLPrice");
-          const targetInput = document.querySelector("#tfdTargetPrice");
-          const trailJumpInput = document.querySelector(
-            "#tfdEnableTrailJumpValue"
-          );
+          let qtyInput;
+          let limitPriceInput;
+          let stopLossInput;
+          let targetInput;
+          let trailJumpInput;
+
+          if (type === "web") {
+            qtyInput = document.querySelector(`[formcontrolname=${id?.qty}]`);
+            console.log("qtyInput inn handleFill==>", qtyInput);
+
+            limitPriceInput = document.querySelector(
+              `[formcontrolname=${id?.limitPrice}]`
+            );
+            stopLossInput = document.querySelector(
+              `[formcontrolname=${id?.stopLoss}]`
+            );
+            targetInput = document.querySelector(
+              `[formcontrolname=${id?.target}]`
+            );
+            trailJumpInput = document.querySelector(
+              `[formcontrolname=${id?.trailJump}]`
+            );
+          } else if (type === "tv") {
+            qtyInput = document.querySelector(id?.qty);
+            limitPriceInput = document.querySelector(id?.limitPrice);
+            stopLossInput = document.querySelector(id?.stopLoss);
+            targetInput = document.querySelector(id?.target);
+            trailJumpInput = document.querySelector(id?.trailJump);
+          }
 
           // console.log("Check stop loss inputs==>", inputs);
           // if (inputs.length === 0) {
@@ -110,25 +133,35 @@ export const getAllValues = (id, type) => {
           target: { tabId: tabs[0].id },
           args: [id, type],
           func: (id, type) => {
-            console.log("✅ Checking for iframes...");
-            console.log("✅ Checking for getAllValues id...", id);
-           
+            console.log("✅ getAllValues Checking for iframes...");
+            // console.log("✅ Checking for getAllValues id...", id);
+
             if (type === "web") {
               console.log("-----web---------");
 
-              const qtySelector = document.querySelector(id?.qty)?.value;
-              console.log('document.querySelector(id?.qty)?.value=>', document.querySelector(id?.qty)?.value)
+              // const qtySelector = document.querySelector(id?.qty)?.value;
+              const qtySelector = document.querySelector(
+                `[formcontrolname=${id?.qty}]`
+              )?.value;
 
-              const livePriceSelector = document.querySelector(id?.livePrice)?.innerText;
+              // const livePriceSelector = document.querySelector(id?.livePrice)?.innerText;
+              const livePriceSelector = document.querySelector(id?.livePrice)
+                .innerHTML;
+
+              // const limitPriceSelector = document.querySelector(
+              //   id?.limitPrice
+              // )?.value;
 
               const limitPriceSelector = document.querySelector(
-                id?.limitPrice
+                `[formcontrolname=${id?.limitPrice}]`
               )?.value;
 
+              // const trailJumpSelector = document.querySelector(
+              //   id?.trailJump
+              // )?.value;
               const trailJumpSelector = document.querySelector(
-                id?.trailJump
+                `[formcontrolname=${id?.trailJump}]`
               )?.value;
-
 
               const allValues = {
                 qty: qtySelector,
@@ -136,15 +169,13 @@ export const getAllValues = (id, type) => {
                 limitPrice: limitPriceSelector,
                 // target: targetSelector|| 101 ,
                 // stopLoss: stopLossSelector || 101,
-                trailJump: trailJumpSelector || '',
+                trailJump: trailJumpSelector || "",
               };
               console.log("allValues =>", allValues);
               if (livePriceSelector) {
                 console.log("✅ Found live price:", livePriceSelector);
                 return allValues;
               }
-             
-
             } else if (type === "tv") {
               const iframes = document.querySelectorAll("iframe");
 
@@ -225,7 +256,6 @@ export const getAllValues = (id, type) => {
   });
 };
 
-
 export const handleInstantOpen = (superTab, btnId, checkBoxId, sectionType) => {
   console.log("handleInstantSell ID==>", superTab, btnId, checkBoxId);
 
@@ -249,103 +279,233 @@ export const handleInstantOpen = (superTab, btnId, checkBoxId, sectionType) => {
 
         function: (superTab, btnId, checkBoxId, sectionType) => {
           console.log("✅ Checking for handleInstantSell iframes...");
-          console.log('btnId=>', btnId);
+          console.log("btnId=>", btnId);
 
           // Handle iframes
           const iframes = document.querySelectorAll("iframe");
-          console.log('iframes length=>', iframes);
+          console.log("iframes length=>", iframes);
 
           if (iframes.length === 0) {
             console.warn("❌ No iframes found.");
             return;
           }
-          console.log('sectionType=>', sectionType)
-          console.log("Outside Iframe loop buyBtn=>", document.querySelector(btnId));
+          console.log("sectionType=>", sectionType);
+          console.log(
+            "Outside Iframe loop buyBtn=>",
+            document.querySelector(btnId)
+          );
 
-         if(sectionType === 'web') {
+          if (sectionType === "web") {
+            const isBuySellBtn = document.querySelector(btnId);
 
-          const isBuySellBtn = document.querySelector(btnId);
+            if (isBuySellBtn) {
+              isBuySellBtn.click();
 
-          if (isBuySellBtn) {
-            isBuySellBtn.click();
+              setTimeout(() => {
+                console.log("goimng in setTiemeout");
+                const isShadowRoot =
+                  document
+                    ?.querySelector("#orderTypeList")
+                    ?.shadowRoot?.querySelector(superTab) || "";
 
-            setTimeout(() => {
-              console.log('goimng in setTiemeout');
-              const isShadowRoot =
-                document
-                  ?.querySelector("#orderTypeList")
-                  ?.shadowRoot?.querySelector(superTab) || "";
+                if (isShadowRoot) {
+                  console.log("going in shadowRoot???");
+                  console.log("super tab btn clicked");
+                  isShadowRoot.click();
+                }
 
-              if (isShadowRoot) {
-                console.log('going in shadowRoot???');
-                console.log("super tab btn clicked");
-                isShadowRoot.click();
-              }
+                // const checkbox = document.querySelector(checkBoxId);
+                // const checkbox = document.querySelector(`[name=${checkBoxId}]`);
+                const checkbox = document.querySelector(
+                  `[name=${checkBoxId}] input[type="checkbox"]`
+                );
+                console.log("checkbox GETTING? =>", checkbox);
 
-              const checkbox = document.querySelector(checkBoxId);
-              console.log(
-                "checkbox GETTING? =>",
-                checkbox
-              );
-
-              if (checkbox) 
-                {
-                console.log("checkbox clicked");
+                if (checkbox) {
+                  console.log("checkbox clicked");
                   checkbox.click();
                 }
-            }, 300);
-          }
+              }, 300);
+            }
+          } else {
+            let found = false;
 
-         }
-         else{
-          let found = false;
+            for (const iframe of iframes) {
+              try {
+                const iframeDoc =
+                  iframe.contentDocument || iframe.contentWindow.document;
 
-          for (const iframe of iframes) {
-            try {
-              const iframeDoc =
-                iframe.contentDocument || iframe.contentWindow.document;
+                const btnSelector = btnId;
 
-              const btnSelector = btnId;
+                const buyBtn = iframeDoc.querySelector(btnSelector);
+                console.log("Inside Ifram loop buyBtn=>", buyBtn);
+                const superTabBtn = iframeDoc.querySelector(superTab);
+                console.log("superTabBtn=>", superTabBtn);
 
-              const buyBtn = iframeDoc.querySelector(btnSelector);
-              console.log("Inside Ifram loop buyBtn=>", buyBtn);
-              const superTabBtn = iframeDoc.querySelector(superTab);
-              console.log("superTabBtn=>", superTabBtn);
+                if (buyBtn) {
+                  buyBtn.click();
+                  // superTabBtn.click();
+                  setTimeout(() => {
+                    {
+                      const isShadowRoot =
+                        document
+                          ?.querySelector("#orderTypeList")
+                          ?.shadowRoot?.querySelector(superTab) || "";
 
-              if (buyBtn) {
-                buyBtn.click();
-                // superTabBtn.click();
-                setTimeout(() => {
-                  {
-                    const isShadowRoot = document
-                      ?.querySelector("#orderTypeList")
-                      ?.shadowRoot?.querySelector(superTab) || '';
+                      if (isShadowRoot) {
+                        console.log("super tab btn clicked");
+                        isShadowRoot?.click();
+                      }
 
-                    if (isShadowRoot) {
-                      console.log("super tab btn clicked");
-                      isShadowRoot?.click();
+                      //  document.querySelector("#tfdEnableTrailJump").click();
+                      console.log(
+                        "sell trailJumpCheckbox=>",
+                        document.querySelector(checkBoxId)
+                      );
+
+                      document.querySelector(checkBoxId).click();
                     }
-
-                    //  document.querySelector("#tfdEnableTrailJump").click();
-                    console.log('sell trailJumpCheckbox=>', document.querySelector(checkBoxId));
-            
-                    document.querySelector(checkBoxId).click();
-                  }
-                }, 300);
-                console.log("✅ Instant Sell Button clicked inside iframe!");
-                found = true;
-                break;
+                  }, 300);
+                  console.log("✅ Instant Sell Button clicked inside iframe!");
+                  found = true;
+                  break;
+                }
+              } catch (error) {
+                console.warn("⚠️ Failed to access iframe:", error);
               }
-            } catch (error) {
-              console.warn("⚠️ Failed to access iframe:", error);
+            }
+
+            if (!found) {
+              console.warn('❌ No "buy" button found in any iframe.');
             }
           }
+        },
+      });
+    });
+  } else {
+    console.warn(
+      "Chrome API is not available. Run this as a Chrome extension."
+    );
+  }
+};
 
-          if (!found) {
-            console.warn('❌ No "buy" button found in any iframe.');
+export const handleShow = (show, sectionType, allIds) => {
+  console.log("handleShow!! ==>", show);
+
+  if (typeof chrome !== "undefined" && chrome.tabs) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs.length === 0) {
+        console.error("No active tab found.");
+        return;
+      }
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        args: [show, sectionType, allIds],
+        function: (show, sectionType, allIds) => {
+          // Handle iframes
+          const iframes = document.querySelectorAll("iframe");
+          //  console.log("iframes handleShow length=>", iframes);
+
+          if (iframes.length === 0) {
+            console.warn("❌ No iframes found.");
+            return;
           }
-         }
-          
+
+          if (sectionType === "web") {
+            console.log("Web section");
+            console.log("iframes handleShow length=>", iframes);
+            console.log('checkinf without', 'chrtBUy=>', show?.chartBuyBtn, 'chartSell', show?.chartSellBtn );
+
+           
+
+            // In frame only-----------------------
+            let found = false;  
+
+            for (const iframe of iframes) {
+              try {
+                const iframeDoc =
+                  iframe.contentDocument || iframe.contentWindow.document;
+
+                const toggleVisibility = (condition, selector) => {
+                  const target = iframeDoc.querySelector(selector);
+            
+                  const target1234 = document.querySelector(selector);
+                 console.log("target1234=>", target1234);
+                 console.log("target=>", target);
+                  if (target) {
+                    target.style.display = condition ? "none" : "block";
+                  }
+                };
+
+                if (show?.chartBuyBtn !== undefined) {
+                    console.log(
+                      "Toggling Buy Button Visibility:",
+                    show.chartBuyBtn , 'allIds?.chartBuyId=>', allIds?.chartBuyId
+                  );
+                  const here = iframeDoc?.querySelector(selector);
+                  console.log('here=>', here);
+                  if (here) {
+                    here.style.display = condition ? "none" : "block";
+                  }
+                  // toggleVisibility(show.chartBuyBtn, allIds?.chartBuyId);
+                }
+
+                if (show?.chartSellBtn !== undefined) {
+                  console.log(
+                    "Toggling Sell Button Visibility:",
+                    show.chartSellBtn, 'allIds?.chartSellId=>', allIds?.chartSellId
+                  );
+                  toggleVisibility(show.chartSellBtn, allIds?.chartSellId);
+                }
+                found = true;
+                break;
+              } catch (error) {
+                console.warn("⚠️ Failed to access iframe:", error);
+              }
+            }
+            if (!found) {
+              console.warn('❌ No button found in any iframe.');
+            }
+          } else {
+            let found = false;
+
+            for (const iframe of iframes) {
+              try {
+                const iframeDoc =
+                  iframe.contentDocument || iframe.contentWindow.document;
+
+                const toggleVisibility = (condition, selector) => {
+                  const target = iframeDoc.querySelector(selector);
+                  if (target) {
+                    target.style.display = condition ? "none" : "block";
+                  }
+                };
+
+                if (show?.buyBtn !== undefined) {
+                  console.log("Toggling Buy Button Visibility:", show.buyBtn);
+                  toggleVisibility(show.buyBtn, allIds?.buyID);
+                }
+
+                if (show?.sellBtn !== undefined) {
+                  console.log("Toggling Sell Button Visibility:", show.sellBtn);
+                  toggleVisibility(show.sellBtn, allIds?.sellID);
+                }
+
+                if (show?.scalperBtn !== undefined) {
+                  console.log(
+                    "Toggling scalperBtn Button Visibility:",
+                    show.scalperBtn
+                  );
+                  toggleVisibility(show.scalperBtn, allIds?.scalperId);
+                }
+              } catch (error) {
+                console.warn("⚠️ Failed to access iframe:", error);
+              }
+            }
+            if (!found) {
+              console.warn('❌ No "buy" button found in any iframe.');
+            }
+          }
         },
       });
     });

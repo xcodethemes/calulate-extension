@@ -90,20 +90,23 @@ const OrderDetails = ({ allIds, type }) => {
     // if (!allIds) return;
     if (Object.keys(allIds)?.length === 0) return;
 
-    getAllValues(allIds, type)
+    console.log('---+++ Obj is not empty +++------allIds=>', allIds)
+  
+      getAllValues(allIds, type)
       .then((price) => {
         console.log("🚀 Live price fetched:", price);
         setQty(price?.qty || 1);
         setLivePrice(price?.livePrice);
-        setLimitPrice(price?.limitPrice || "");
+        setLimitPrice(price?.limitPrice || '');
         setAddTarget(price?.target || "");
         setStopLoss(price?.stopLoss || "");
-        setTrailJump(price?.trailJump || "");
+        setTrailJump(price?.trailJump || 1);
       })
       .catch((err) => {
         console.error("❌ Failed to get live price:", err);
       });
-  }, [allIds]);
+    
+  }, [allIds, limitPrice]);
 
   return (
     <div className="mt-9">

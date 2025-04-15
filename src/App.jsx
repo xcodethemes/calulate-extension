@@ -123,6 +123,7 @@ const App = () => {
                 id="fillValues"
                 name="fillValues"
                 onClick={() => {
+                  console.log('filledValues==>', filledValues)
                   if (
                     filledValues?.trailJump == "Off" ||
                     filledValues?.trailJump == "" ||
@@ -133,7 +134,7 @@ const App = () => {
                   ) {
                     alert("Please fill all the values");
                   } else {
-                    handleFillValues(filledValues);
+                    handleFillValues(filledValues, sectionType, sectionData);
                   }
                 }}
                 className=" flex gap-2 justify-center items-center bg-blue-500 hover:bg-blue-700 text-white text-base w-full py-2 px-0 rounded shadow-lg transition-transform transform hover:scale-105"
@@ -147,7 +148,7 @@ const App = () => {
       )}
 
       {/* ✅ Settings Section with buyID Input */}
-      {view === "settings" && <Settings setView={setView} />}
+      {view === "settings" && <Settings setView={setView} type={sectionType} allIds={sectionData} />}
 
       {/* ✅ Notes Section */}
       {view === "notes" && <Notes setView={setView} />}
