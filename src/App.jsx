@@ -27,7 +27,7 @@ const App = () => {
   const [sectionData, setSectionData] = useState({});
 
   const filledValues = useSelector((state) => state?.settings?.fillValues);
-  console.log("extension value=>", filledValues?.stopLoss);
+  // console.log("filledValues value=>", filledValues?.stopLoss);
 
   const tvSection = useSelector((state) => state?.settings?.tvSection);
   const webSection = useSelector((state) => state?.settings?.webSection);
@@ -43,18 +43,22 @@ const App = () => {
     if (typeof chrome !== "undefined" && chrome.tabs) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]) {
+          console.log("checking url coming=>", tabs[0].url);
           setUrl(tabs[0].url || "");
         }
       });
     }
-  }, [url]);
+  }, []);
 
-  console.log("check url=>>", url);
+  // console.log("check url=>>", url);
 
   useEffect(() => {
-    setSectionType(url?.includes("web") ? "web" : "tv");
-    setSectionData(url?.includes("web") ? webSection : tvSection);
-  }, [sectionType, url, sectionData]);
+    if (url) {
+      console.log("setting data by url==>", url);
+      setSectionType(url?.includes("web") ? "web" : "tv");
+      setSectionData(url?.includes("web") ? webSection : tvSection);
+    }
+  }, [url]);
 
   return (
     <div className="p-0">
@@ -79,8 +83,7 @@ const App = () => {
           </div>
 
           <CountdownTimer />
-
-          <OrderDetails allIds={sectionData} type={sectionType} />
+          {Object.keys(sectionData)?.length !== 0 &&  <OrderDetails allIds={sectionData} type={sectionType} />}
 
           <div className="my-3">
             {/* <div className="flex justify-center items-center gap-2"> */}
@@ -123,7 +126,7 @@ const App = () => {
                 id="fillValues"
                 name="fillValues"
                 onClick={() => {
-                  console.log('filledValues==>', filledValues)
+                  console.log("filledValues==>", filledValues);
                   if (
                     filledValues?.trailJump == "Off" ||
                     filledValues?.trailJump == "" ||
@@ -148,7 +151,9 @@ const App = () => {
       )}
 
       {/* ✅ Settings Section with buyID Input */}
-      {view === "settings" && <Settings setView={setView} type={sectionType} allIds={sectionData} />}
+      {view === "settings" && (
+        <Settings setView={setView} type={sectionType} allIds={sectionData} />
+      )}
 
       {/* ✅ Notes Section */}
       {view === "notes" && <Notes setView={setView} />}

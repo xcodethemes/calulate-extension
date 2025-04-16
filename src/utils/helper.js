@@ -155,6 +155,7 @@ export const getAllValues = (id, type) => {
               const limitPriceSelector = document.querySelector(
                 `[formcontrolname=${id?.limitPrice}]`
               )?.value;
+              console.log('limitPriceSelector in web=>', limitPriceSelector)
 
               // const trailJumpSelector = document.querySelector(
               //   id?.trailJump
@@ -171,7 +172,7 @@ export const getAllValues = (id, type) => {
                 // stopLoss: stopLossSelector || 101,
                 trailJump: trailJumpSelector || "",
               };
-              console.log("allValues =>", allValues);
+              console.log("allValues in web =>", allValues);
               if (livePriceSelector) {
                 console.log("✅ Found live price:", livePriceSelector);
                 return allValues;
@@ -224,7 +225,7 @@ export const getAllValues = (id, type) => {
                     // stopLoss: stopLossSelector || 101,
                     trailJump: trailJumpSelector || 101,
                   };
-                  console.log("allValues =>", allValues);
+                  console.log("allValues in TV =>", allValues);
                   if (livePriceSelector) {
                     console.log("✅ Found live price:", livePriceSelector);
                     return allValues;
@@ -257,7 +258,7 @@ export const getAllValues = (id, type) => {
 };
 
 export const handleInstantOpen = (superTab, btnId, checkBoxId, sectionType) => {
-  console.log("handleInstantSell ID==>", superTab, btnId, checkBoxId);
+  console.log("handleInstantOpen ID==>", superTab, btnId, checkBoxId);
 
   // if (!ID) {
   //   alert("Please enter a valid ID before trading.");
@@ -278,7 +279,7 @@ export const handleInstantOpen = (superTab, btnId, checkBoxId, sectionType) => {
         args: [superTab, btnId, checkBoxId, sectionType],
 
         function: (superTab, btnId, checkBoxId, sectionType) => {
-          console.log("✅ Checking for handleInstantSell iframes...");
+          console.log("✅ Checking for handleInstantOpen iframes...");
           console.log("btnId=>", btnId);
 
           // Handle iframes
@@ -415,12 +416,10 @@ export const handleShow = (show, sectionType, allIds) => {
             console.log("Web section");
             console.log("iframes handleShow length=>", iframes);
             console.log('checkinf without', 'chrtBUy=>', show?.chartBuyBtn, 'chartSell', show?.chartSellBtn );
-
-           
-
             // In frame only-----------------------
-            let found = false;  
-
+          
+            let found = false;
+            
             for (const iframe of iframes) {
               try {
                 const iframeDoc =
@@ -467,44 +466,50 @@ export const handleShow = (show, sectionType, allIds) => {
               console.warn('❌ No button found in any iframe.');
             }
           } else {
-            let found = false;
+             const target= document.querySelector('body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > div.chart-markup-table > div:nth-child(1) > div.chart-markup-table.pane > div > div.legend-l31H9iuA.noWrap-l31H9iuA.wrappable-l31H9iuA > div.legendMainSourceWrapper-l31H9iuA > div.container-hw_3o_pb > div > div.apply-common-tooltip.button-hw_3o_pb.sellButton-hw_3o_pb')
+             if(target)
+             {
+              target.style.display='none'
+             }
 
-            for (const iframe of iframes) {
-              try {
-                const iframeDoc =
-                  iframe.contentDocument || iframe.contentWindow.document;
+            // let found = false;
 
-                const toggleVisibility = (condition, selector) => {
-                  const target = iframeDoc.querySelector(selector);
-                  if (target) {
-                    target.style.display = condition ? "none" : "block";
-                  }
-                };
+            // for (const iframe of iframes) {
+            //   try {
+            //     const iframeDoc =
+            //       iframe.contentDocument || iframe.contentWindow.document;
 
-                if (show?.buyBtn !== undefined) {
-                  console.log("Toggling Buy Button Visibility:", show.buyBtn);
-                  toggleVisibility(show.buyBtn, allIds?.buyID);
-                }
+            //     const toggleVisibility = (condition, selector) => {
+            //       const target = iframeDoc.querySelector(selector);
+            //       if (target) {
+            //         target.style.display = condition ? "none" : "block";
+            //       }
+            //     };
 
-                if (show?.sellBtn !== undefined) {
-                  console.log("Toggling Sell Button Visibility:", show.sellBtn);
-                  toggleVisibility(show.sellBtn, allIds?.sellID);
-                }
+            //     if (show?.buyBtn !== undefined) {
+            //       console.log("Toggling Buy Button Visibility:", show.buyBtn);
+            //       toggleVisibility(show.buyBtn, allIds?.buyID);
+            //     }
 
-                if (show?.scalperBtn !== undefined) {
-                  console.log(
-                    "Toggling scalperBtn Button Visibility:",
-                    show.scalperBtn
-                  );
-                  toggleVisibility(show.scalperBtn, allIds?.scalperId);
-                }
-              } catch (error) {
-                console.warn("⚠️ Failed to access iframe:", error);
-              }
-            }
-            if (!found) {
-              console.warn('❌ No "buy" button found in any iframe.');
-            }
+            //     if (show?.sellBtn !== undefined) {
+            //       console.log("Toggling Sell Button Visibility:", show.sellBtn);
+            //       toggleVisibility(show.sellBtn, allIds?.sellID);
+            //     }
+
+            //     if (show?.scalperBtn !== undefined) {
+            //       console.log(
+            //         "Toggling scalperBtn Button Visibility:",
+            //         show.scalperBtn
+            //       );
+            //       toggleVisibility(show.scalperBtn, allIds?.scalperId);
+            //     }
+            //   } catch (error) {
+            //     console.warn("⚠️ Failed to access iframe:", error);
+            //   }
+            // }
+            // if (!found) {
+            //   console.warn('❌ No "buy" button found in any iframe.');
+            // }
           }
         },
       });

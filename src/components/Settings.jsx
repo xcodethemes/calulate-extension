@@ -31,9 +31,6 @@ const Settings = ({ setView, type, allIds }) => {
   const [selectedOptions, setSelectedOptions] = useState(setPercentage);
   const [trailJump, setTrailJump] = useState(1);
 
-
-
-
   const [active, setActive] = useState(TABS.TV_SECTION);
   console.log("active=>", active);
 
@@ -54,12 +51,10 @@ const Settings = ({ setView, type, allIds }) => {
     scalperBtn: false,
     chartBuyBtn: false,
     chartSellBtn: false,
-  
   });
 
   useEffect(() => {
     handleShow(show, type, allIds);
-   
   }, [show]);
 
   useEffect(() => {
@@ -100,7 +95,7 @@ const Settings = ({ setView, type, allIds }) => {
   const topMenu = [
     { heading: "Top Menu" },
     { label: "Show Sell", id: "sellBtn" },
-    { label: "Show Buy", id: "buyBtn" },  
+    { label: "Show Buy", id: "buyBtn" },
     { label: "Show Scalper", id: "scalperBtn" },
   ];
 
@@ -150,7 +145,8 @@ const Settings = ({ setView, type, allIds }) => {
     dispatch(setValues(combinedValue));
   };
 
-  const inputFields = active === TABS.TV_SECTION ? tvInputFields : webInputFields;
+  const inputFields =
+    active === TABS.TV_SECTION ? tvInputFields : webInputFields;
 
   const handleToggleChange = (id, value) => {
     setShow((prev) => ({
@@ -278,15 +274,24 @@ const Settings = ({ setView, type, allIds }) => {
       <div className="mt-9">
         {chartSettings?.map((item, index) => {
           if (item?.heading) {
-            return <h1 className="font-bold text-lg mb-2">{item?.heading}</h1>;
+            return (
+              <>
+                <h1 className="font-bold text-lg mb-2">{item?.heading}</h1>
+                <div>
+                  <p className="text-base text-teal-600 ">
+                    In Chart Buy Sell Buttons can be Hide from settings
+                  </p>
+                </div>
+              </>
+            );
           }
 
-          return (
-            <div key={index} className="flex mb-3 items-center justify-between">
-              <p className="text-left text-base">{item?.label}</p>
-              <ToggleBtn onToggle={(val) => handleToggleChange(item?.id, val)}/>
-            </div>
-          );
+          // return (
+          //   <div key={index} className="flex mb-3 items-center justify-between">
+          //     <p className="text-left text-base">{item?.label}</p>
+          //     <ToggleBtn onToggle={(val) => handleToggleChange(item?.id, val)}/>
+          //   </div>
+          // );
         })}
       </div>
 
