@@ -317,7 +317,7 @@ const Settings = ({ setView, type, allIds }) => {
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
                 <Select
-                  className="w-[130px] border border-teal-600  text-teal-600 rounded "
+                  className="w-[100px] border border-teal-600  text-teal-600 rounded "
                   options={
                     item?.label === "Target"
                       ? targetPercentageDropdown
@@ -371,7 +371,8 @@ const Settings = ({ setView, type, allIds }) => {
                   id="settingsTrailJump"
                   value={trailJump}
                   setValue={setTrailJump}
-                  style='py-[3.5px]'
+                  style='py-1'
+                  width='w-[100px]'
                 />
               )}
             </div>

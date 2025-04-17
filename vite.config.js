@@ -1,7 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-// import { crx } from 'vite-plugin-chrome-extension';
-// import manifest from './manifest.json'; // Path to your manifest.json
 // import eslint from 'vite-plugin-eslint';
 import tailwindcss from '@tailwindcss/vite'
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -9,7 +7,6 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 export default defineConfig({
   plugins: [
     react(),
-    // crx({ manifest }), // ✅ Use crx plugin for Chrome extension
     // eslint(), // Ensure there are no invalid options here,
     tailwindcss(),
     viteStaticCopy({
@@ -25,9 +22,10 @@ export default defineConfig({
     outDir: "dist",
     rollupOptions: {
       input: {
-        main: "index.html",           // ✅ Main entry
+        // main: "index.html",           // ✅ Main entry
         content: "content.js", 
-        background: "background.js"     // ✅ Add content.js explicitly
+        background: "background.js",     // ✅ Add content.js explicitly
+        sidepanel: "index.html" // <-- Side panel Main entry
       },
       output: {
         entryFileNames: `[name].js`,     // ✅ Keep original filenames

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const QuantityInput = ({ value, id, setValue, style }) => {
+const QuantityInput = ({ value, id, setValue, style, width }) => {
   const [quantity, setQuantity] = useState(value || 1);
 
   const handleDecrease = () => {
@@ -22,7 +22,11 @@ const QuantityInput = ({ value, id, setValue, style }) => {
   };
 
   return (
-    <div className="w-[130px] flex items-center border border-teal-600 rounded overflow-hidden">
+    <div
+      className={` ${
+        width ? width : "w-[130px]"
+      } flex items-center border border-teal-600 rounded overflow-hidden`}
+    >
       {/* <button
         type="button"
         onClick={handleDecrease}
