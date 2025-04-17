@@ -146,7 +146,7 @@ export const getAllValues = (id, type) => {
 
               // const livePriceSelector = document.querySelector(id?.livePrice)?.innerText;
               const livePriceSelector = document.querySelector(id?.livePrice)
-                .innerHTML;
+                .innerHTML.trim();
 
               // const limitPriceSelector = document.querySelector(
               //   id?.limitPrice
@@ -247,6 +247,7 @@ export const getAllValues = (id, type) => {
             );
             reject(chrome.runtime.lastError.message);
           } else {
+            console.log('see results', results)
             const value = results?.[0]?.result;
             console.log("🎯 Final result from injected script:", value);
             resolve(value);
@@ -466,50 +467,46 @@ export const handleShow = (show, sectionType, allIds) => {
               console.warn('❌ No button found in any iframe.');
             }
           } else {
-             const target= document.querySelector('body > div.js-rootresizer__contents.layout-with-border-radius > div.layout__area--center > div.chart-container.top-full-width-chart.active > div.chart-container-border > div.chart-widget.chart-widget--themed-light.chart-widget__top--themed-light.chart-widget__bottom--themed-light > div.chart-markup-table > div:nth-child(1) > div.chart-markup-table.pane > div > div.legend-l31H9iuA.noWrap-l31H9iuA.wrappable-l31H9iuA > div.legendMainSourceWrapper-l31H9iuA > div.container-hw_3o_pb > div > div.apply-common-tooltip.button-hw_3o_pb.sellButton-hw_3o_pb')
-             if(target)
-             {
-              target.style.display='none'
-             }
+            
 
-            // let found = false;
+            let found = false;
 
-            // for (const iframe of iframes) {
-            //   try {
-            //     const iframeDoc =
-            //       iframe.contentDocument || iframe.contentWindow.document;
+            for (const iframe of iframes) {
+              try {
+                const iframeDoc =
+                  iframe.contentDocument || iframe.contentWindow.document;
 
-            //     const toggleVisibility = (condition, selector) => {
-            //       const target = iframeDoc.querySelector(selector);
-            //       if (target) {
-            //         target.style.display = condition ? "none" : "block";
-            //       }
-            //     };
+                const toggleVisibility = (condition, selector) => {
+                  const target = iframeDoc.querySelector(selector);
+                  if (target) {
+                    target.style.display = condition ? "none" : "block";
+                  }
+                };
 
-            //     if (show?.buyBtn !== undefined) {
-            //       console.log("Toggling Buy Button Visibility:", show.buyBtn);
-            //       toggleVisibility(show.buyBtn, allIds?.buyID);
-            //     }
+                if (show?.buyBtn !== undefined) {
+                  console.log("Toggling Buy Button Visibility:", show.buyBtn);
+                  toggleVisibility(show.buyBtn, allIds?.buyID);
+                }
 
-            //     if (show?.sellBtn !== undefined) {
-            //       console.log("Toggling Sell Button Visibility:", show.sellBtn);
-            //       toggleVisibility(show.sellBtn, allIds?.sellID);
-            //     }
+                if (show?.sellBtn !== undefined) {
+                  console.log("Toggling Sell Button Visibility:", show.sellBtn);
+                  toggleVisibility(show.sellBtn, allIds?.sellID);
+                }
 
-            //     if (show?.scalperBtn !== undefined) {
-            //       console.log(
-            //         "Toggling scalperBtn Button Visibility:",
-            //         show.scalperBtn
-            //       );
-            //       toggleVisibility(show.scalperBtn, allIds?.scalperId);
-            //     }
-            //   } catch (error) {
-            //     console.warn("⚠️ Failed to access iframe:", error);
-            //   }
-            // }
-            // if (!found) {
-            //   console.warn('❌ No "buy" button found in any iframe.');
-            // }
+                if (show?.scalperBtn !== undefined) {
+                  console.log(
+                    "Toggling scalperBtn Button Visibility:",
+                    show.scalperBtn
+                  );
+                  toggleVisibility(show.scalperBtn, allIds?.scalperId);
+                }
+              } catch (error) {
+                console.warn("⚠️ Failed to access iframe:", error);
+              }
+            }
+            if (!found) {
+              console.warn('❌ No "buy" button found in any iframe.');
+            }
           }
         },
       });

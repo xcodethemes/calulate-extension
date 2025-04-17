@@ -317,7 +317,7 @@ const Settings = ({ setView, type, allIds }) => {
               {/* <ToggleBtn /> */}
               {item?.label != "Trail Jump" && (
                 <Select
-                  className="border border-teal-600  text-teal-600 rounded p-0"
+                  className="w-[130px] border border-teal-600  text-teal-600 rounded "
                   options={
                     item?.label === "Target"
                       ? targetPercentageDropdown
@@ -346,6 +346,23 @@ const Settings = ({ setView, type, allIds }) => {
                       color: "#0d9488", // teal-600
                       fontWeight: "600",
                     }),
+                    
+                    menu: (provided) => ({
+                      ...provided,
+                      // backgroundColor:'red',
+                      maxHeight: 150, // adjust height as needed
+                    }),
+                    menuList: (provided) => ({
+                      ...provided,
+                      maxHeight: 150,
+                      paddingTop: 0,
+                      paddingBottom: 0,
+                    }),
+                    option: (provided) => ({
+                      ...provided,
+                      paddingTop: 6,
+                      paddingBottom: 6,
+                    }),
                   }}
                 />
               )}
@@ -354,6 +371,7 @@ const Settings = ({ setView, type, allIds }) => {
                   id="settingsTrailJump"
                   value={trailJump}
                   setValue={setTrailJump}
+                  style='py-[3.5px]'
                 />
               )}
             </div>

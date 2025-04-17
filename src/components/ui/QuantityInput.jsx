@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const QuantityInput = ({ value, id , setValue }) => {
+const QuantityInput = ({ value, id, setValue, style }) => {
   const [quantity, setQuantity] = useState(value || 1);
 
   const handleDecrease = () => {
@@ -16,8 +16,8 @@ const QuantityInput = ({ value, id , setValue }) => {
     // if (!isNaN(val) && val > 0) {
     //   onChange(val);
     // }
-    if(setValue){
-      setValue(e.target.value)
+    if (setValue) {
+      setValue(e.target.value);
     }
   };
 
@@ -38,8 +38,10 @@ const QuantityInput = ({ value, id , setValue }) => {
         value={value}
         onChange={handleChange}
         min="1"
-        className="w-full  text-center text-teal-600 font-bold text-base focus:outline-none appearance-none
-        [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className={`w-full ${
+          style ? style : ""
+        }  text-center text-teal-600 font-bold text-base focus:outline-none appearance-none
+        [-moz-appearance:_textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
       />
 
       {/* <button
