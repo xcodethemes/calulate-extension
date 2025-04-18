@@ -5,7 +5,7 @@ import ContactDetails from "./ContactDetails";
 import { IoChatboxEllipsesOutline, IoSettingsOutline } from "react-icons/io5";
 import CountdownTimer from "./ui/CountdownTimer";
 import OrderDetails from "./OrderDetails";
-import { handleInstantOpen } from "../utils/helper";
+import { handleFillValues, handleInstantOpen } from "../utils/helper";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import Pro from "./Pro";
 import Settings from "./Settings";
@@ -14,7 +14,8 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 const TradeX = () => {
-    const [url, setUrl] = useState("");
+
+  const [url, setUrl] = useState("");
   const [sectionType, setSectionType] = useState("");
   const [sectionData, setSectionData] = useState({});
 
@@ -42,8 +43,6 @@ const TradeX = () => {
     }
   }, []);
 
-  // console.log("check url=>>", url);
-
   useEffect(() => {
     if (url) {
       console.log("setting data by url==>", url);
@@ -51,6 +50,7 @@ const TradeX = () => {
       setSectionData(url?.includes("web") ? webSection : tvSection);
     }
   }, [url]);
+
   return (
     <div className="p-0">
       {/* <Header /> */}
@@ -61,7 +61,7 @@ const TradeX = () => {
         <>
           <ContactDetails />
 
-          <div className="flex justify-between items-center mb-9">
+          {/* <div className="flex justify-between items-center mb-5">
             <div className="flex items-center gap-2 ">
               <IoSettingsOutline className="text-teal-600 text-xl" />
               <h2 className="text-lg font-semibold">Quick Settings</h2>
@@ -71,10 +71,12 @@ const TradeX = () => {
               <IoChatboxEllipsesOutline className="text-teal-600 text-xl" />
               <h2 className="text-lg font-semibold"> Send Feedback</h2>
             </div>
-          </div>
+          </div> */}
 
           <CountdownTimer />
-          {Object.keys(sectionData)?.length !== 0 &&  <OrderDetails allIds={sectionData} type={sectionType} />}
+          {Object.keys(sectionData)?.length !== 0 && (
+            <OrderDetails allIds={sectionData} type={sectionType} />
+          )}
 
           <div className="my-1">
             {/* <div className="flex justify-center items-center gap-2"> */}
@@ -90,7 +92,7 @@ const TradeX = () => {
                     sectionType
                   )
                 }
-                className="flex gap-1 justify-center items-center bg-green-500 hover:bg-green-700 text-white text-base py-2 px-5 rounded shadow-lg transition-transform transform hover:scale-105"
+                className="flex gap-1 justify-center items-center cursor-pointer bg-green-500 hover:bg-green-700 text-white text-base py-2 px-5 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Buy
               </button>
@@ -106,7 +108,7 @@ const TradeX = () => {
                     sectionType
                   )
                 }
-                className="flex gap-2 justify-center items-center bg-red-600 hover:bg-red-700 text-white text-base py-2 px-5 rounded shadow-lg transition-transform transform hover:scale-105"
+                className="flex gap-2 justify-center items-center cursor-pointer bg-red-600 hover:bg-red-700 text-white text-base py-2 px-5 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Instant Sell
               </button>
@@ -131,7 +133,7 @@ const TradeX = () => {
                     handleFillValues(filledValues, sectionType, sectionData);
                   }
                 }}
-                className=" flex gap-2 justify-center items-center bg-blue-500 hover:bg-blue-700 text-white text-base w-full py-2 px-0 rounded shadow-lg transition-transform transform hover:scale-105"
+                className=" flex gap-2 justify-center items-center cursor-pointer bg-blue-500 hover:bg-blue-700 text-white text-base w-full py-2 px-0 rounded shadow-lg transition-transform transform hover:scale-105"
               >
                 <BsFillLightningChargeFill /> Fill values
               </button>
@@ -152,6 +154,6 @@ const TradeX = () => {
       <Footer />
     </div>
   );
-}
+};
 
-export default TradeX
+export default TradeX;

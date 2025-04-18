@@ -36,6 +36,56 @@ const OrderDetails = ({ allIds, type }) => {
   const [qty, setQty] = useState("");
   const[fetchAllValues, setFetchAllValues]= useState(null)
 
+  const [inputValue, setInputValue] = useState("");
+
+  // useEffect(() => {
+  //   const port = chrome.runtime.connect({ name: 'pricePort' });
+  
+  //   port.onMessage.addListener((message) => {
+  //     if (message.type === 'PRICE_UPDATE') {
+  //       console.log('message.price=>', message.price)
+  //       setInputValue(message.price);
+  //     }
+  //   });
+  
+  //   return () => {
+  //     port.disconnect();
+  //   };
+  // }, []);
+  
+
+  // useEffect(() => {
+  //   const handleMessage = (message, sender, sendResponse) => {
+  //     console.log('handleMessage message=>', message)
+  //     if (message.type === "UPDATE_LIVE_PRICE") {
+  //       console.log("Received message:", message.payload.value);
+  //       setInputValue(message.payload.value);
+  //     }
+  //   };
+
+  //   chrome.runtime.onMessage.addListener(handleMessage);
+
+  //   // Cleanup on unmount
+  //   return () => {
+  //     chrome.runtime.onMessage.removeListener(handleMessage);
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   // Listen for messages from content script
+  //   console.log('++++---------------PRICE_UPDATE----------------+++++++')
+  //   const listener = (message, sender, sendResponse) => {
+  //     console.log('any msg==??????', message)
+  //     if (message.type === 'PRICE_UPDATE') {
+  //       setInputValue(message.price);
+  //     }
+  //   };
+
+  //   chrome.runtime.onMessage.addListener(listener);
+
+  //   return () => chrome.runtime.onMessage.removeListener(listener);
+  // }, []);
+
   useEffect(() => {
     console.log('----------------useEffect fetchPrice runiinng---------------------------')
     async function fetchPrice() {
@@ -156,7 +206,8 @@ const OrderDetails = ({ allIds, type }) => {
   }, [qty, limitPrice, trailJump]);
 
   return (
-    <div className="mt-9">
+    <div className="mt-4">
+      {/* <p className="text-center text-teal-600 text-base">{inputValue || 'No Values Found'}</p> */}
       <div className="flex justify-center items-center gap-2 mb-4.5 text-lg">
         <BsFillLightningChargeFill />
 
@@ -201,7 +252,7 @@ const OrderDetails = ({ allIds, type }) => {
       </div>
 
       {/* Add Target */}
-      <div className="mb-9 rounded-lg max-w-md">
+      <div className="mb-5 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold cursor-pointer">
             Target : {targerPer}%
@@ -231,7 +282,7 @@ const OrderDetails = ({ allIds, type }) => {
 
                 dispatch(storeTargetValue(addValue));
               }}
-              className={`px-3 py-1 text-sm  font-medium ${
+              className={`px-3 py-1 text-sm  font-medium cursor-pointer ${
                 value === targerPer
                   ? "bg-green-500 hover:bg-green-700 text-white text-bold border-green-600"
                   : "text-gray-600 border-gray-300 hover:bg-gray-100"
@@ -245,7 +296,7 @@ const OrderDetails = ({ allIds, type }) => {
       {/* Add Target Ends */}
 
       {/* Add Stop Loss */}
-      <div className="mb-9 rounded-lg max-w-md">
+      <div className="mb-5 rounded-lg max-w-md">
         <div className="flex justify-between items-center mb-4">
           <label className="flex items-center gap-2 text-lg font-semibold">
             {/* <input
@@ -280,7 +331,7 @@ const OrderDetails = ({ allIds, type }) => {
 
                 dispatch(storeStopLossValue(addValue));
               }}
-              className={`px-3 py-1 text-sm  font-medium ${
+              className={`px-3 py-1 text-sm  font-medium cursor-pointer ${
                 value === stopLossPer
                   ? "bg-red-600 hover:bg-red-700 text-white text-bold border-red-600"
                   : "text-gray-600 border-gray-300 hover:bg-gray-100"

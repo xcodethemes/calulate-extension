@@ -29,6 +29,14 @@ export const TABS = {
   WEB_SECTION: "webSection",
 };
 
+// export const targetAddPercentage = [
+//   1.0,
+//   2.0,
+//   3.0,
+//   4.0,
+  
+// ];
+
 export const targetAddPercentage = [
   0.5,
   1.0,
