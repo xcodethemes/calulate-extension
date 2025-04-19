@@ -38,53 +38,21 @@ const OrderDetails = ({ allIds, type }) => {
 
   const [inputValue, setInputValue] = useState("");
 
-  // useEffect(() => {
-  //   const port = chrome.runtime.connect({ name: 'pricePort' });
-  
-  //   port.onMessage.addListener((message) => {
-  //     if (message.type === 'PRICE_UPDATE') {
-  //       console.log('message.price=>', message.price)
-  //       setInputValue(message.price);
-  //     }
-  //   });
-  
-  //   return () => {
-  //     port.disconnect();
-  //   };
-  // }, []);
-  
 
-  // useEffect(() => {
-  //   const handleMessage = (message, sender, sendResponse) => {
-  //     console.log('handleMessage message=>', message)
-  //     if (message.type === "UPDATE_LIVE_PRICE") {
-  //       console.log("Received message:", message.payload.value);
-  //       setInputValue(message.payload.value);
-  //     }
-  //   };
+  useEffect(() => {
+    // Listen for messages from content script
+    const listener = (message, sender, sendResponse) => {
+      console.log('Listenerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr message', message)
+      if (message.type === 'PRICE_UPDATE') {
+        setLivePrice(message.price);
+      }
+    };
 
-  //   chrome.runtime.onMessage.addListener(handleMessage);
+    chrome.runtime.onMessage.addListener(listener);
 
-  //   // Cleanup on unmount
-  //   return () => {
-  //     chrome.runtime.onMessage.removeListener(handleMessage);
-  //   };
-  // }, []);
+    return () => chrome.runtime.onMessage.removeListener(listener);
+  }, []);
 
-  // useEffect(() => {
-  //   // Listen for messages from content script
-  //   console.log('++++---------------PRICE_UPDATE----------------+++++++')
-  //   const listener = (message, sender, sendResponse) => {
-  //     console.log('any msg==??????', message)
-  //     if (message.type === 'PRICE_UPDATE') {
-  //       setInputValue(message.price);
-  //     }
-  //   };
-
-  //   chrome.runtime.onMessage.addListener(listener);
-
-  //   return () => chrome.runtime.onMessage.removeListener(listener);
-  // }, []);
 
   useEffect(() => {
     console.log('----------------useEffect fetchPrice runiinng---------------------------')

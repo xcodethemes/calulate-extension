@@ -61,7 +61,7 @@ const TradeX = () => {
         <>
           <ContactDetails />
 
-          {/* <div className="flex justify-between items-center mb-5">
+          <div className="flex justify-between items-center mb-5">
             <div className="flex items-center gap-2 ">
               <IoSettingsOutline className="text-teal-600 text-xl" />
               <h2 className="text-lg font-semibold">Quick Settings</h2>
@@ -71,7 +71,7 @@ const TradeX = () => {
               <IoChatboxEllipsesOutline className="text-teal-600 text-xl" />
               <h2 className="text-lg font-semibold"> Send Feedback</h2>
             </div>
-          </div> */}
+          </div>
 
           <CountdownTimer />
           {Object.keys(sectionData)?.length !== 0 && (
